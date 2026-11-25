@@ -236,8 +236,16 @@ async function saveEnrollments(){
 function startStudy(rows,level,dbProgress){
 const words = rows.map(r=>({id:r.id,w:r.word,f:r.word_form,c:r.meaning_zh,e:r.example_de,ec:r.example_zh,p:r.visual,lesson:'Lektion '+r.lesson_no,lessonNo:r.lesson_no}));
 const LESSON_META = {"Lektion 1": {"title": "Sommerkurs in Leipzig", "short": "L1"}, "Lektion 2": {"title": "Möller oder Müller?", "short": "L2"}, "Lektion 3": {"title": "Arbeiten im Café", "short": "L3"}, "Lektion 4": {"title": "Lecker essen!", "short": "L4"}, "Lektion 5": {"title": "Hast du Zeit?", "short": "L5"}, "Lektion 6": {"title": "Meine Stadt", "short": "L6"}, "Lektion 7": {"title": "Der neue Job", "short": "L7"}, "Lektion 8": {"title": "Freizeit und Hobbys", "short": "L8"}, "Lektion 9": {"title": "Zuhause", "short": "L9"}, "Lektion 10": {"title": "Familie Schumann", "short": "L10"}, "Lektion 11": {"title": "Viel Arbeit", "short": "L11"}, "Lektion 12": {"title": "Essen und Trinken", "short": "L12"}, "Lektion 13": {"title": "Fit und gesund", "short": "L13"}, "Lektion 14": {"title": "Voll im Trend", "short": "L14"}, "Lektion 15": {"title": "Jahreszeiten und Feste", "short": "L15"}, "Lektion 16": {"title": "Ab in den Urlaub!", "short": "L16"}};
-for(const w of words){if(level!=="A1"||!LESSON_META[w.lesson])LESSON_META[w.lesson]={title:level,short:"L"+w.lessonNo};}
-if(level!=="A1"){document.getElementById("lessonFilter").replaceChildren(new Option("全部单元","all"));for(const l of [...new Set(words.map(w=>w.lesson))])document.getElementById("lessonFilter").add(new Option(l,l));}
+const A2_LESSON_TITLES=["Klassentreffen","Mobil leben","Wohnen und Zusammenleben","Hast du Netz?","So arbeiten wir heute","Was liest du gerade?","Leben mit Tieren","Global und regional","Alltagsleben","Festival – Sommer","Natur und Umwelt","Reparieren und Selbermachen","Gipfelstürmer","Freunde fürs Leben","Leben auf dem Land","Glück und Lebensträume"];
+if(level!=="A1"){
+ for(const key of Object.keys(LESSON_META))delete LESSON_META[key];
+ for(const w of words)if(!LESSON_META[w.lesson])LESSON_META[w.lesson]={title:level==="A2"?(A2_LESSON_TITLES[w.lessonNo-1]||level):level,short:"L"+w.lessonNo};
+ const filter=document.getElementById("lessonFilter");
+ filter.replaceChildren(new Option("全部单元","all"));
+ for(const l of [...new Set(words.map(w=>w.lesson))])filter.add(new Option(l+" · "+LESSON_META[l].title,l));
+}else{
+ for(const w of words)if(!LESSON_META[w.lesson])LESSON_META[w.lesson]={title:level,short:"L"+w.lessonNo};
+}
 const STORAGE_KEY = "wortstudio_preview_"+identity.id+"_"+level;
 const state = {filtered:[...words], index:0, hideCn:false, progress: loadProgress()};
 

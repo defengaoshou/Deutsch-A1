@@ -231,6 +231,7 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
       <button id="speakEx">朗读例句</button>
       <button id="studyAuto" aria-pressed="true">自动朗读：开</button>
     </div>
+    <p id="studyVoiceStatus" role="status" style="font-size:12px;color:#586d63;margin:8px 0 0" hidden></p>
     <div class="navline">
       <button id="prevBtn">← 上一个</button>
       <button id="nextBtn">下一个 →</button>
@@ -241,6 +242,7 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
 
 <dialog id="quizDialog" aria-labelledby="quizTitle">
 <div class="modalHead" style="flex-wrap:wrap"><h2 id="quizTitle">单词检测</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="quizAuto" aria-pressed="true">自动朗读：开</button><button id="quizClose" class="quizClose">返回背诵</button></div></div>
+<p id="quizVoiceStatus" role="status" style="font-size:12px;color:#586d63;margin:8px 0" hidden></p>
 <section id="quizSetup">
 <div class="quizGrid"><div><label for="quizLesson">教材单元</label><select id="quizLesson"></select></div><div><label for="quizScope">检测范围</label><select id="quizScope"><option value="all">全部词汇</option><option value="todo">未掌握词汇</option><option value="known">已掌握词汇</option><option value="wrong">历史错题</option></select></div><div><label for="quizType">题型</label><select id="quizType"><option value="decn">德语 → 中文（选择）</option><option value="cnde">中文 → 德语（选择）</option><option value="spell">中文 → 德语（拼写）</option><option value="mixed">混合检测</option></select></div><div><label for="quizCount">题量</label><select id="quizCount"><option value="10">10 题</option><option value="20" selected>20 题</option><option value="30">30 题</option><option value="50">50 题</option><option value="all">全部可出题词汇</option></select></div></div>
 <div id="quizAvailable" class="muted" style="margin:16px 0" aria-live="polite"></div>
@@ -348,7 +350,8 @@ const listEl = el('list');
 const AUTO_KEY='wortstudio_auto_read_v1';
 let autoRead={study:true,quiz:true};try{const v=JSON.parse(localStorage.getItem(AUTO_KEY)||'{}');for(const k of ['study','quiz'])if(typeof v?.[k]==='boolean')autoRead[k]=v[k]}catch(e){}
 let lastStudyKey=null, studyReady=false;
-function stopSpeech(){if(window.speechSynthesis)speechSynthesis.cancel()}
+let speechRequest=0;
+function stopSpeech(){speechRequest++;if(window.speechSynthesis)speechSynthesis.cancel()}
 function autoButtons(){for(const [id,k] of [['studyAuto','study'],['quizAuto','quiz']]){el(id).textContent='自动朗读：'+(autoRead[k]?'开':'关');el(id).setAttribute('aria-pressed',String(autoRead[k]))}}
 function setAuto(k){autoRead[k]=!autoRead[k];try{localStorage.setItem(AUTO_KEY,JSON.stringify(autoRead))}catch(e){};autoButtons();stopSpeech();if(!autoRead[k])return;if(k==='study')speak(currentWord()?.w,1,true);else if(quiz.active){const q=quiz.questions[quiz.i];if(q&&(q.type==='decn'||quiz.answered))speak(q.w.w,1,true)}}
 function autoStudy(w,force=false){const key=w?wordKey(w):null;const changed=key!==lastStudyKey;lastStudyKey=key;if(changed)stopSpeech();if(studyReady&&autoRead.study&&w&&(changed||force)&&!el('quizDialog').open)speak(w.w,1,true)}
@@ -471,13 +474,50 @@ function renderStats(){
 
 function currentWord(){ return state.filtered[state.index]; }
 
+function voiceStatus(message){
+  for(const id of ['studyVoiceStatus','quizVoiceStatus']){
+    const node=el(id); if(node){node.textContent=message;node.hidden=!message}
+  }
+}
+function chooseGermanVoice(voices){
+  const normalize=v=>String(v.lang||'').trim().toLowerCase().replace(/_/g,'-');
+  const de=voices.filter(v=>/^de(?:-|$)/.test(normalize(v)));
+  return de.find(v=>normalize(v)==='de-de'&&v.localService)||de.find(v=>normalize(v)==='de-de')||de[0]||null;
+}
 function speak(text, rate=1, silent=false){
-  if(!text) return;
-  if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){if(!silent)alert("当前浏览器不支持语音朗读。");return;} const u = new SpeechSynthesisUtterance(text);const voice=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith("de"));if(voice)u.voice=voice;
-  u.lang='de-DE';
-  u.rate=rate;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
+  if(!text)return;
+  stopSpeech();
+  const request=speechRequest;
+  if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){
+    voiceStatus('当前浏览器不支持语音朗读，请使用支持德语语音的 Chrome 或 Edge。');return;
+  }
+  const synth=window.speechSynthesis;
+  function trySpeak(){
+    if(request!==speechRequest)return true;
+    const voice=chooseGermanVoice(synth.getVoices());
+    if(!voice)return false;
+    voiceStatus('');
+    const u=new SpeechSynthesisUtterance(text);
+    u.voice=voice;
+    u.lang=voice.lang.replace(/_/g,'-');
+    u.rate=rate;
+    u.onerror=e=>{if(request===speechRequest&&!['canceled','interrupted'].includes(e.error)){voiceStatus('德语语音播放失败，请确认系统已安装德语语音，或换用 Edge / Chrome。')}};
+    synth.speak(u);
+    return true;
+  }
+  if(trySpeak())return;
+  voiceStatus('正在加载德语语音…');
+  let done=false,timer;
+  const cleanup=()=>{done=true;clearTimeout(timer);synth.removeEventListener('voiceschanged',changed)};
+  function changed(){if(!done&&trySpeak())cleanup()}
+  synth.addEventListener('voiceschanged',changed);
+  timer=setTimeout(()=>{
+    if(done)return;
+    cleanup();
+    if(request!==speechRequest)return;
+    if(!trySpeak())voiceStatus('未检测到德语语音（Deutsch / de-DE）。请在系统中安装德语语音后刷新网页；已禁止使用英语代替。');
+  },1600);
+  changed();
 }
 
 el('lessonFilter').onchange=()=>applyFilters(true);

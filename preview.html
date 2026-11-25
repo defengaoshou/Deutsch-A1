@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wortstudio · A1 Lektion 1–16</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0}body{background:#f2f5f4;color:#18342e;font:16px/1.45 system-ui,"Microsoft YaHei",sans-serif}
+header{background:#143e34;color:#fff;padding:26px max(20px,calc((100% - 1160px)/2));display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+header h1{margin:4px 0 0;font-size:26px}header small{display:block;color:#b6d5c8;letter-spacing:.08em}
+.layout{max-width:1160px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:310px 1fr;gap:22px}
+.panel{background:#fff;border:1px solid #dae5df;border-radius:20px;padding:20px;box-shadow:0 2px 8px rgba(20,62,52,.04)}
+button,select,input{font:inherit;border:1px solid #d4e0da;border-radius:10px;padding:10px 14px;background:#fff;color:#19352f}button{cursor:pointer}button:hover{background:#e4f0e9}button.primary{background:#21684e;color:#fff;border-color:#21684e}button:disabled{opacity:.45;cursor:default}
+select,input{width:100%;margin:5px 0 10px}
+.list{max-height:680px;overflow:auto;padding-right:4px}
+.item{display:flex;justify-content:space-between;gap:8px;text-align:left;width:100%;border:0;margin:2px 0;padding:11px 10px;font-size:14px;border-radius:10px;background:transparent}
+.item:hover{background:#f0f7f3}.item.active{background:#e2f0e6;font-weight:700}
+.item-meta{display:block;font-size:11px;color:#6d857e;margin-top:2px}
+.section-label{position:sticky;top:0;background:#fff;padding:8px 8px 6px;margin-top:10px;font-size:12px;font-weight:800;color:#355f54;letter-spacing:.05em;border-bottom:1px solid #eef3f0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;margin:14px 0}
+.statbox{background:#f6faf8;border:1px solid #e3ece7;border-radius:12px;padding:10px 12px}
+.statbox strong{display:block;font-size:18px}
+.bar{height:8px;background:#dce7e1;border-radius:999px;overflow:hidden;margin-top:6px}.bar div{height:100%;background:#4b9972}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 2px}.controls button{flex:1;min-width:120px}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#eef6f1;color:#1d5b46;font-size:12px;font-weight:700}
+.visual{background:linear-gradient(135deg,#e5f2e8,#f9f2da);height:180px;border-radius:16px;display:grid;place-items:center;font-size:96px;margin:20px 0 12px}
+.word{text-align:center;font-size:clamp(28px,4vw,44px);font-weight:800;overflow-wrap:anywhere;margin:14px 0 6px}
+.form,.meaning,.translation{text-align:center}.meaning{font-size:24px;margin:14px 0 8px}
+.form{color:#45675b}.translation{color:#55776b}
+.example{background:#f4f7f5;border-radius:14px;padding:16px 18px;margin:18px 0;line-height:1.7}
+.example .label{font-size:12px;letter-spacing:.08em;color:#557768;font-weight:700}
+.example .de{font-size:20px;font-weight:700;margin:8px 0 10px}
+.example .cn{font-size:17px;color:#355b51}
+.hidden{visibility:hidden}
+.muted{color:#68827a}.foot{font-size:12px;color:#668079;line-height:1.6;margin:15px 0 0}.center{text-align:center}
+.navline{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px}
+.navline button{flex:1;min-width:120px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{order:2}.list{max-height:320px}header{padding:18px}.visual{height:145px}.panel{padding:16px}}
+.item-meta{overflow-wrap:anywhere}dialog{border:1px solid #d4e0da;border-radius:16px;max-width:min(94vw,1000px);max-height:90vh;padding:18px;color:#19352f}dialog::backdrop{background:#102b25a8}dialog img{display:block;max-width:100%;height:auto;margin:12px auto}dialog textarea{font:inherit;width:100%;min-height:70px;border:1px solid #d4e0da;border-radius:8px;padding:8px}dialog label{display:block;margin-top:12px;font-size:13px}.modalHead{display:flex;align-items:center;justify-content:space-between;gap:12px}.scanLabel{font-size:12px;color:#557768}header .muted{color:#b6d5c8}.item[hidden],#scanActions[hidden]{display:none}.hidden{visibility:hidden}
+#quizDialog{width:min(720px,94vw);padding:24px;max-height:92vh;overflow:auto;box-shadow:0 20px 70px #102b2540}#quizDialog::backdrop{background:#102b25f5}#quizDialog [hidden]{display:none!important}#quizDialog h2{margin:0;font-size:23px}#quizDialog h3{margin:16px 0 8px}#quizDialog label{font-size:14px;font-weight:650}#quizDialog select{margin:6px 0 0}#quizDialog .quizGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}#quizDialog .quizPrompt{padding:26px 16px;background:#f4f7f5;border-radius:14px;text-align:center;margin:16px 0;font-size:clamp(24px,5vw,36px);font-weight:750;overflow-wrap:anywhere}#quizDialog .quizOptions{display:grid;gap:9px}#quizDialog .quizOptions button{text-align:left;white-space:normal;overflow-wrap:anywhere;padding:13px 16px}#quizDialog button.qRight{background:#e0f3e7;color:#16583c;border:2px solid #459969;opacity:1}#quizDialog button.qWrong{background:#fce8e5;color:#9d3327;border:2px solid #cf7568;opacity:1}#quizDialog .quizFeedback{padding:12px 14px;background:#f4f7f5;border-radius:12px;margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere}#quizDialog .quizFeedback.good{color:#21684e}#quizDialog .quizFeedback.bad{color:#9d3327}#quizDialog .quizRow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}#quizDialog .quizResults{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}#quizDialog .quizMistake{border-bottom:1px solid #e3ece7;padding:12px 0;overflow-wrap:anywhere}#quizDialog .quizMistake:last-child{border:0}#quizDialog .quizBig{font-size:40px;font-weight:800;text-align:center;padding:15px}#quizDialog input{font-size:20px}#quizDialog .quizKey button{padding:5px 12px;min-width:38px}#quizDialog .quizKey{display:flex;gap:6px;flex-wrap:wrap}#quizDialog .quizClose{flex-shrink:0}@media(max-width:500px){#quizDialog{padding:16px}#quizDialog .quizGrid{grid-template-columns:1fr}#quizDialog .quizPrompt{padding:20px 8px}}
+button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa2;font-weight:650}
+</style>
+<section id="portal" class="panel" style="max-width:720px;margin:32px auto;padding:24px">
+<small>DEUTSCH / WORTSTUDIO</small><h1>德语单词学习室 · 登录测试版</h1>
+<form id="loginForm"><label for="loginEmail">邮箱</label><input id="loginEmail" type="email" autocomplete="username" required><label for="loginPass">密码</label><input id="loginPass" type="password" autocomplete="current-password" required><button id="loginSubmit" class="primary" type="submit">登录</button></form>
+<section id="coursePortal" hidden><p id="loginAccount"></p><h2>我的课程</h2><div id="courseButtons" class="controls"></div><button id="portalLogout">退出登录</button></section>
+<section id="adminPortal" hidden><hr><h2>教师 · 课程授权</h2><label for="studentSelect">学生账号</label><select id="studentSelect"></select><div id="enrollmentControls"></div><button id="saveEnroll" class="primary">保存课程授权</button><p id="adminMsg" role="status"></p></section>
+<p id="portalMsg" role="status" style="white-space:pre-wrap"></p>
+</section><style>#portal [hidden],#studyApp[hidden],#portal[hidden]{display:none!important}#enrollmentControls label{display:flex;align-items:center;gap:8px;padding:8px 0}#enrollmentControls input[type=checkbox]{width:auto;margin:0}#portal h2{font-size:20px}#portal button{margin:4px}#portal label{display:block;margin:8px 0 2px}</style>
+<div id="studyApp" hidden><header>
+  <div>
+    <small id="studySubtitle">DEUTSCH / WORTSTUDIO</small>
+    <h1 id="studyTitle">单词学习室</h1>
+    <div class="muted" id="cardCount"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button id="returnPortal">返回课程 / 退出</button><div class="badge" id="levelBadge"></div><button id="quizHeader" class="primary" style="background:#fff;color:#143e34;border-color:#fff;font-weight:750">单词检测</button></div>
+</header>
+<div class="layout">
+  <aside class="panel sidebar">
+    <label>教材单元</label>
+    <select id="lessonFilter">
+      <option value="all">全部单元</option>
+      <option value="Lektion 1">Lektion 1 · Sommerkurs in Leipzig</option>
+      <option value="Lektion 2">Lektion 2 · Möller oder Müller?</option>
+      <option value="Lektion 3">Lektion 3 · Arbeiten im Café</option>
+      <option value="Lektion 4">Lektion 4 · Lecker essen!</option>
+      <option value="Lektion 5">Lektion 5 · Hast du Zeit?</option>
+      <option value="Lektion 6">Lektion 6 · Meine Stadt</option>
+      <option value="Lektion 7">Lektion 7 · Der neue Job</option>
+      <option value="Lektion 8">Lektion 8 · Freizeit und Hobbys</option>
+      <option value="Lektion 9">Lektion 9 · Zuhause</option>
+      <option value="Lektion 10">Lektion 10 · Familie Schumann</option>
+      <option value="Lektion 11">Lektion 11 · Viel Arbeit</option>
+      <option value="Lektion 12">Lektion 12 · Essen und Trinken</option>
+      <option value="Lektion 13">Lektion 13 · Fit und gesund</option>
+      <option value="Lektion 14">Lektion 14 · Voll im Trend</option>
+      <option value="Lektion 15">Lektion 15 · Jahreszeiten und Feste</option>
+      <option value="Lektion 16">Lektion 16 · Ab in den Urlaub!</option>
+</select>
+    <label>搜索（德语 / 中文）</label>
+    <input id="search" placeholder="例如：Zug / 图书馆 / Büro">
+    <label>显示模式</label>
+    <select id="mode">
+      <option value="all">显示全部</option>
+      <option value="todo">只看未掌握</option>
+      <option value="known">只看已掌握</option>
+    </select>
+    <div class="stats">
+      <div class="statbox"><span>当前结果</span><strong id="countNow">0</strong><div class="muted">筛选后单词数</div></div>
+      <div class="statbox"><span>已掌握</span><strong id="countKnown">0</strong><div class="muted">当前范围内</div></div>
+    </div>
+    <div class="bar"><div id="progressBar" style="width:0%"></div></div>
+    <div class="controls">
+      <button id="toggleCn">隐藏中文</button>
+      <button id="randomBtn">随机抽词</button>
+    </div>
+    <div class="controls">
+      <button id="markBtn" class="primary">标记已掌握</button>
+      <button id="resetBtn">清空当前进度</button>
+    </div>
+    
+    <div class="controls"><button id="quizOpen" class="primary">开始单词检测</button></div>
+    <hr style="border:none;border-top:1px solid #e7efea;margin:18px 0">
+    <div class="list" id="list"></div>
+  </aside>
+  <main class="panel">
+    <div class="badges">
+      <span class="badge" id="badgeLesson">Lektion</span>
+      <span class="badge" id="badgeIndex">1 / 1274</span>
+      <span class="badge" id="badgeStatus">未掌握</span>
+    </div>
+    <div class="visual" id="visual">📘</div>
+    <div class="word" id="word">请选择单词</div>
+    <div class="form" id="form"></div>
+    <div class="meaning" id="meaning"></div>
+    <div class="translation" id="translationHint"></div>
+
+    <div class="example">
+      <div class="label" id="exampleLabel">教材原句 · BEISPIELSATZ</div>
+      <div class="de" id="example"></div>
+      <div class="cn" id="exampleCn"></div>
+    </div>
+
+    <div class="controls">
+      <button id="speakWord">朗读单词</button>
+      <button id="speakSlow">慢速朗读</button>
+      <button id="speakEx">朗读例句</button>
+      <button id="studyAuto" aria-pressed="true">自动朗读：开</button>
+    </div>
+    <div class="navline">
+      <button id="prevBtn">← 上一个</button>
+      <button id="nextBtn">下一个 →</button>
+    </div>
+    <div id="scanActions" style="display:none!important" hidden><button id="scanBtn" aria-label="教材原页"></button><button id="editBtn" aria-label="编辑"></button><div id="scanNote"></div></div>
+  </main>
+</div>
+
+<dialog id="quizDialog" aria-labelledby="quizTitle">
+<div class="modalHead" style="flex-wrap:wrap"><h2 id="quizTitle">单词检测</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="quizAuto" aria-pressed="true">自动朗读：开</button><button id="quizClose" class="quizClose">返回背诵</button></div></div>
+<section id="quizSetup">
+<div class="quizGrid"><div><label for="quizLesson">教材单元</label><select id="quizLesson"></select></div><div><label for="quizScope">检测范围</label><select id="quizScope"><option value="all">全部词汇</option><option value="todo">未掌握词汇</option><option value="known">已掌握词汇</option><option value="wrong">历史错题</option></select></div><div><label for="quizType">题型</label><select id="quizType"><option value="decn">德语 → 中文（选择）</option><option value="cnde">中文 → 德语（选择）</option><option value="spell">中文 → 德语（拼写）</option><option value="mixed">混合检测</option></select></div><div><label for="quizCount">题量</label><select id="quizCount"><option value="10">10 题</option><option value="20" selected>20 题</option><option value="30">30 题</option><option value="50">50 题</option><option value="all">全部可出题词汇</option></select></div></div>
+<div id="quizAvailable" class="muted" style="margin:16px 0" aria-live="polite"></div>
+<div class="controls"><button id="quizStart" class="primary">开始检测</button></div>
+</section>
+<section id="quizActive" hidden>
+<div class="quizRow" style="margin-top:18px"><span class="badge" id="quizStep"></span><span class="muted" id="quizLiveScore"></span></div><div class="bar"><div id="quizProgress" style="width:0%"></div></div>
+<h3 id="quizInstruction"></h3><div id="quizPrompt" class="quizPrompt"></div>
+<div id="quizOptions" class="quizOptions"></div>
+<div id="quizWriting" hidden><label for="quizAnswer">输入德语单词（名词含冠词，注意大小写）</label><input id="quizAnswer" lang="de" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="在此输入答案"><div class="quizKey" id="quizKeys"></div><div class="controls"><button id="quizSubmit" class="primary">提交答案</button></div></div>
+<div id="quizFeedback" class="quizFeedback" role="status" hidden></div>
+<div class="controls"><button id="quizSkip">不会 / 跳过</button><button id="quizListen" hidden>朗读正确答案</button><button id="quizNext" class="primary" hidden>下一题 →</button></div>
+</section>
+<section id="quizFinished" hidden>
+<div id="quizPercent" class="quizBig"></div><div class="quizResults"><div class="statbox"><span>总题数</span><strong id="quizTotal"></strong></div><div class="statbox"><span>答对</span><strong id="quizCorrect"></strong></div><div class="statbox"><span>答错 / 跳过</span><strong id="quizIncorrect"></strong></div></div>
+<div class="controls"><button id="quizRetry" class="primary">重测本轮错题</button><button id="quizAgain">重新设置</button></div><h3>本轮错题</h3><div id="quizMistakes"></div>
+</section></dialog>
+<dialog id="scanDialog"><div class="modalHead"><strong id="scanTitle">教材原页</strong><button id="closeScan">关闭</button></div><img id="scanImage" alt="教材扫描页"></dialog><dialog id="editDialog"><div class="modalHead"><strong>校对词卡</strong><button id="closeEdit">关闭</button></div><label>德语词条<input id="editW"></label><label>词形<input id="editF"></label><label>中文释义<input id="editC"></label><label>教材例句<textarea id="editE"></textarea></label><label>中文翻译<textarea id="editEC"></textarea></label><div class="controls"><button id="saveEdit" class="primary">保存校对</button><button id="cancelEdit">取消</button></div></dialog></div>
+<script>
+"use strict";
+const PROJECT="https://ogmluylcboqvuglvzyig.supabase.co";
+const KEY="sb_publishable_6XHXbVHms6H7zUyKZmZrfA_lKo1doy8";
+const ui=id=>document.getElementById(id);
+let session=null, identity=null, grants=[], courseRows=[], admin=false;
+const say=(s)=>{ui("portalMsg").textContent=s};
+async function api(path,opts={}){
+ const {method="GET",body,headers={},login=false}=opts;
+ const res=await fetch(PROJECT+path,{method,headers:{apikey:KEY, ...(session&&!login?{Authorization:"Bearer "+session.access_token}:{}), ...(body!==undefined?{"Content-Type":"application/json"}:{}),...headers},...(body!==undefined?{body:JSON.stringify(body)}:{})});
+ const raw=await res.text();let data=null;try{data=raw?JSON.parse(raw):null}catch{data=raw}
+ if(!res.ok)throw new Error(data?.message||data?.msg||data?.error_description||data?.error||"HTTP "+res.status);
+ return data;
+}
+async function allRows(table,query){
+ const result=[];for(let offset=0;;offset+=500){const batch=await api("/rest/v1/"+table+"?"+query+"&limit=500&offset="+offset);if(!Array.isArray(batch))throw Error("返回数据异常");result.push(...batch);if(batch.length<500)break}return result
+}
+function logout(){session=null;identity=null;location.reload()}
+ui("portalLogout").onclick=logout;ui("returnPortal").onclick=logout;
+ui("loginForm").onsubmit=async e=>{
+ e.preventDefault();ui("loginSubmit").disabled=true;say("正在登录…");
+ try{
+  session=await api("/auth/v1/token?grant_type=password",{method:"POST",login:true,body:{email:ui("loginEmail").value.trim(),password:ui("loginPass").value}});
+  ui("loginPass").value="";
+  identity=session.user;
+  if(!session.access_token||!identity?.id)throw Error("登录响应异常");
+  const profile=await api("/rest/v1/profiles?select=user_id,active,display_name&user_id=eq."+encodeURIComponent(identity.id));
+  if(!profile[0]?.active)throw Error("账号已停用或尚未建立");
+  courseRows=await api("/rest/v1/courses?select=level,title,published&order=level.asc");
+  try{admin=(await api("/rest/v1/rpc/wortstudio_my_is_admin",{method:"POST",body:{}}))===true}catch{admin=false}
+  ui("loginAccount").textContent=identity.email+(admin?" · 教师管理员":" · 学生");
+  ui("loginForm").hidden=true;ui("coursePortal").hidden=false;
+  const levels=courseRows.filter(c=>admin||c.published);
+  const box=ui("courseButtons");box.replaceChildren();
+  for(const c of levels){const btn=document.createElement("button");btn.textContent=c.level+(c.published?"":" · 未发布");btn.className="primary";btn.onclick=()=>loadCourse(c.level,btn);box.append(btn)}
+  say(levels.length?"请选择课程。":"暂未开通课程，请联系教师。");
+  if(admin){ui("adminPortal").hidden=false;try{await initAdmin()}catch(err){ui("adminMsg").textContent="读取学生列表失败："+err.message}}
+ }catch(err){session=null;identity=null;ui("loginForm").hidden=false;ui("coursePortal").hidden=true;ui("adminPortal").hidden=true;say("登录或读取权限失败："+err.message)}
+ finally{ui("loginSubmit").disabled=false}
+};
+async function loadCourse(level,btn){
+ btn.disabled=true;say("正在读取已授权词库…");
+ try{
+  const rows=await allRows("vocabulary","select=id,level,lesson_no,sort_order,word,word_form,meaning_zh,example_de,example_zh,visual&level=eq."+encodeURIComponent(level)+"&order=lesson_no.asc,sort_order.asc,id.asc");
+  if(!rows.length){say("该课程暂无可访问词汇。");return}
+  const progress=await allRows("learning_progress","select=vocabulary_id,mastered,wrong_count&user_id=eq."+encodeURIComponent(identity.id)+"&level=eq."+encodeURIComponent(level)+"&order=vocabulary_id.asc");
+  ui("studyTitle").textContent=level+" · 单词学习室";ui("studySubtitle").textContent="DEUTSCH / "+level+" / WORTSTUDIO";ui("cardCount").textContent="共 "+rows.length+" 个单词卡";ui("levelBadge").textContent="教材等级："+level;
+  ui("portal").hidden=true;ui("studyApp").hidden=false;
+  startStudy(rows,level,progress);
+ }catch(err){ui("studyApp").hidden=true;ui("portal").hidden=false;say("加载失败："+err.message)}finally{btn.disabled=false}
+}
+let adminStudents=[];
+async function initAdmin(){
+ adminStudents=await allRows("profiles","select=user_id,email,display_name,active&order=user_id.asc");
+ const select=ui("studentSelect");select.replaceChildren();
+ for(const p of adminStudents.filter(p=>p.user_id!==identity.id)){const opt=new Option((p.display_name?p.display_name+" · ":"")+(p.email||p.user_id),p.user_id);select.add(opt)}
+ select.onchange=()=>loadEnrollments().catch(e=>ui("adminMsg").textContent=e.message);
+ ui("saveEnroll").onclick=()=>saveEnrollments().catch(e=>ui("adminMsg").textContent=e.message);
+ await loadEnrollments();
+}
+async function loadEnrollments(){
+ const id=ui("studentSelect").value;const wrap=ui("enrollmentControls");wrap.replaceChildren();ui("saveEnroll").disabled=true;
+ if(!id)return;
+ grants=await api("/rest/v1/enrollments?select=level,active,valid_until&user_id=eq."+encodeURIComponent(id));
+ if(ui("studentSelect").value!==id)return;
+ for(const c of courseRows){const lab=document.createElement("label"), cb=document.createElement("input");cb.type="checkbox";cb.value=c.level;const existing=grants.find(x=>x.level===c.level);cb.checked=!!existing?.active;lab.append(cb,document.createTextNode(c.level+(c.published?"":"（未发布）")+(existing?.valid_until?" · 到期 "+existing.valid_until.slice(0,10):"")));wrap.append(lab)}
+ ui("saveEnroll").disabled=false;
+}
+async function saveEnrollments(){
+ const id=ui("studentSelect").value;if(!id)return;ui("saveEnroll").disabled=true;ui("studentSelect").disabled=true;
+ try{
+  const changes=[...ui("enrollmentControls").querySelectorAll("input")].filter(cb=>!!grants.find(g=>g.level===cb.value)?.active!==cb.checked).map(cb=>({user_id:id,level:cb.value,active:cb.checked,valid_until:grants.find(g=>g.level===cb.value)?.valid_until??null}));
+  if(changes.length)await api("/rest/v1/enrollments?on_conflict=user_id,level",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:changes});
+  ui("adminMsg").textContent="课程授权已保存。学生重新登录后可查看最新权限。";await loadEnrollments()
+ }finally{ui("saveEnroll").disabled=false;ui("studentSelect").disabled=false}
+}
+function startStudy(rows,level,dbProgress){
+const words = rows.map(r=>({id:r.id,w:r.word,f:r.word_form,c:r.meaning_zh,e:r.example_de,ec:r.example_zh,p:r.visual,lesson:'Lektion '+r.lesson_no,lessonNo:r.lesson_no}));
+const LESSON_META = {"Lektion 1": {"title": "Sommerkurs in Leipzig", "short": "L1"}, "Lektion 2": {"title": "Möller oder Müller?", "short": "L2"}, "Lektion 3": {"title": "Arbeiten im Café", "short": "L3"}, "Lektion 4": {"title": "Lecker essen!", "short": "L4"}, "Lektion 5": {"title": "Hast du Zeit?", "short": "L5"}, "Lektion 6": {"title": "Meine Stadt", "short": "L6"}, "Lektion 7": {"title": "Der neue Job", "short": "L7"}, "Lektion 8": {"title": "Freizeit und Hobbys", "short": "L8"}, "Lektion 9": {"title": "Zuhause", "short": "L9"}, "Lektion 10": {"title": "Familie Schumann", "short": "L10"}, "Lektion 11": {"title": "Viel Arbeit", "short": "L11"}, "Lektion 12": {"title": "Essen und Trinken", "short": "L12"}, "Lektion 13": {"title": "Fit und gesund", "short": "L13"}, "Lektion 14": {"title": "Voll im Trend", "short": "L14"}, "Lektion 15": {"title": "Jahreszeiten und Feste", "short": "L15"}, "Lektion 16": {"title": "Ab in den Urlaub!", "short": "L16"}};
+for(const w of words){if(level!=="A1"||!LESSON_META[w.lesson])LESSON_META[w.lesson]={title:level,short:"L"+w.lessonNo};}
+if(level!=="A1"){document.getElementById("lessonFilter").replaceChildren(new Option("全部单元","all"));for(const l of [...new Set(words.map(w=>w.lesson))])document.getElementById("lessonFilter").add(new Option(l,l));}
+const STORAGE_KEY = "wortstudio_preview_"+identity.id+"_"+level;
+const state = {filtered:[...words], index:0, hideCn:false, progress: loadProgress()};
+
+const el = id => document.getElementById(id);
+const listEl = el('list');
+const AUTO_KEY='wortstudio_auto_read_v1';
+let autoRead={study:true,quiz:true};try{const v=JSON.parse(localStorage.getItem(AUTO_KEY)||'{}');for(const k of ['study','quiz'])if(typeof v?.[k]==='boolean')autoRead[k]=v[k]}catch(e){}
+let lastStudyKey=null, studyReady=false;
+function stopSpeech(){if(window.speechSynthesis)speechSynthesis.cancel()}
+function autoButtons(){for(const [id,k] of [['studyAuto','study'],['quizAuto','quiz']]){el(id).textContent='自动朗读：'+(autoRead[k]?'开':'关');el(id).setAttribute('aria-pressed',String(autoRead[k]))}}
+function setAuto(k){autoRead[k]=!autoRead[k];try{localStorage.setItem(AUTO_KEY,JSON.stringify(autoRead))}catch(e){};autoButtons();stopSpeech();if(!autoRead[k])return;if(k==='study')speak(currentWord()?.w,1,true);else if(quiz.active){const q=quiz.questions[quiz.i];if(q&&(q.type==='decn'||quiz.answered))speak(q.w.w,1,true)}}
+function autoStudy(w,force=false){const key=w?wordKey(w):null;const changed=key!==lastStudyKey;lastStudyKey=key;if(changed)stopSpeech();if(studyReady&&autoRead.study&&w&&(changed||force)&&!el('quizDialog').open)speak(w.w,1,true)}
+
+
+function loadProgress(){return Object.fromEntries(dbProgress.filter(p=>p.mastered).map(p=>[p.vocabulary_id,true]));}
+function saveProgress(){ try{localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));}catch(e){} }
+function wordKey(w){return w.id;}
+function isKnown(w){ return !!state.progress[wordKey(w)]; }
+function setKnown(w,val){state.progress[wordKey(w)]=!!val;if(!val)delete state.progress[wordKey(w)];syncProgress(w,{mastered:!!val});}
+const remoteProgress=new Map(dbProgress.map(p=>[p.vocabulary_id,p]));
+let writeQueue=Promise.resolve();
+function syncProgress(w,patch){
+ const id=identity.id, current=remoteProgress.get(w.id)||{mastered:false,wrong_count:0};const next={...current,...patch};remoteProgress.set(w.id,next);
+ const row={user_id:id,level,vocabulary_id:w.id,mastered:next.mastered,wrong_count:next.wrong_count,updated_at:new Date().toISOString()};
+ writeQueue=writeQueue.then(()=>api("/rest/v1/learning_progress?on_conflict=user_id,vocabulary_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:row})).catch(e=>{alert("学习记录同步失败："+e.message)});
+}
+
+function normalize(s){ return (s||'').toLowerCase(); }
+
+function applyFilters(keepCurrent=false){
+  const lesson = el('lessonFilter').value;
+  const q = normalize(el('search').value.trim());
+  const mode = el('mode').value;
+  const prev = keepCurrent ? state.filtered[state.index] : null;
+  state.filtered = words.filter(w => {
+    if (lesson !== 'all' && w.lesson !== lesson) return false;
+    if (q) {
+      const text = [w.w,w.f,w.c,w.e,w.ec,w.lesson].join(' | ').toLowerCase();
+      if (!text.includes(q)) return false;
+    }
+    const known = isKnown(w);
+    if (mode === 'todo' && known) return false;
+    if (mode === 'known' && !known) return false;
+    return true;
+  });
+  if (prev) {
+    const idx = state.filtered.findIndex(w => wordKey(w) === wordKey(prev));
+    state.index = idx >= 0 ? idx : 0;
+  } else if (state.index >= state.filtered.length) {
+    state.index = 0;
+  }
+  renderList();
+  renderCard();
+  renderStats();
+}
+
+function renderList(){
+  listEl.innerHTML='';
+  if(!state.filtered.length) {
+    listEl.innerHTML='<div class="muted" style="padding:10px 4px">没有匹配结果。</div>';
+    return;
+  }
+  let lastLesson = '';
+  state.filtered.forEach((w,i)=>{
+    if (w.lesson !== lastLesson) {
+      const sec = document.createElement('div');
+      sec.className='section-label';
+      sec.textContent = `${w.lesson} · ${LESSON_META[w.lesson].title}`;
+      listEl.appendChild(sec);
+      lastLesson = w.lesson;
+    }
+    const btn = document.createElement('button');
+    btn.className='item' + (i===state.index?' active':'');
+    const a=document.createElement('div'), b=document.createElement('div'), c=document.createElement('span'), status=document.createElement('div');b.textContent=w.w;c.className='item-meta';c.textContent=state.hideCn?'':w.c;a.append(b,c);status.textContent=isKnown(w)?'✅':'';btn.append(a,status);
+    btn.onclick=()=>{state.index=i; renderList(); renderCard(true); renderStats();};
+    listEl.appendChild(btn);
+  });
+}
+
+function renderCard(forceRead=false){
+  const w = state.filtered[state.index];
+  if(!w) {
+    el('word').textContent='没有匹配结果';
+    el('form').textContent='';
+    el('meaning').textContent='';
+    el('translationHint').textContent='';
+    el('example').textContent='';
+    el('exampleCn').textContent='';
+    el('visual').textContent='📭';
+    el('badgeLesson').textContent='—';
+    el('badgeIndex').textContent='0 / 0';
+    el('badgeStatus').textContent='—';
+    el('scanActions').hidden=true;el('markBtn').disabled=true;
+    el('prevBtn').disabled=true;
+    el('nextBtn').disabled=true;
+    autoStudy(null);
+    return;
+  }
+  el('markBtn').disabled=false;el('scanActions').hidden=!w.src;el('exampleLabel').textContent=w.ocr?'教材例句':'教材原句 · BEISPIELSATZ';
+  el('prevBtn').disabled = state.index===0;
+  el('nextBtn').disabled = state.index===state.filtered.length-1;
+  el('visual').textContent = w.p || '📘';
+  el('word').textContent = w.w;
+  el('form').textContent = w.f || '—';
+  el('meaning').textContent = w.c || '';
+  el('translationHint').textContent = '';
+  el('example').textContent = w.e || '';
+  el('exampleCn').textContent = w.ec || '';
+  el('meaning').className = 'meaning' + (state.hideCn ? ' hidden':'' );
+  el('translationHint').className = 'translation' + (state.hideCn ? ' hidden':'' );
+  el('exampleCn').className = 'cn' + (state.hideCn ? ' hidden':'' );
+  el('badgeLesson').textContent = `${w.lesson} · ${LESSON_META[w.lesson].title}`;
+  el('badgeIndex').textContent = `${state.index+1} / ${state.filtered.length}`;
+  const known = isKnown(w);
+  el('badgeStatus').textContent = known ? '已掌握' : '未掌握';
+  el('badgeStatus').style.background = known ? '#e6f5eb' : '#fff4df';
+  el('badgeStatus').style.color = known ? '#1d6c49' : '#8a5d00';
+  el('markBtn').textContent = known ? '取消已掌握' : '标记已掌握';
+  autoStudy(w,forceRead);
+}
+
+function renderStats(){
+  const total = state.filtered.length;
+  const known = state.filtered.filter(isKnown).length;
+  el('countNow').textContent = total;
+  el('countKnown').textContent = known;
+  el('progressBar').style.width = total ? ((known/total)*100).toFixed(1)+'%' : '0%';
+}
+
+function currentWord(){ return state.filtered[state.index]; }
+
+function speak(text, rate=1, silent=false){
+  if(!text) return;
+  if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){if(!silent)alert("当前浏览器不支持语音朗读。");return;} const u = new SpeechSynthesisUtterance(text);const voice=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith("de"));if(voice)u.voice=voice;
+  u.lang='de-DE';
+  u.rate=rate;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+el('lessonFilter').onchange=()=>applyFilters(true);
+el('search').oninput=()=>applyFilters(true);
+el('mode').onchange=()=>applyFilters(true);
+el('toggleCn').onclick=()=>{ state.hideCn=!state.hideCn; el('toggleCn').textContent = state.hideCn ? '显示中文' : '隐藏中文'; renderList(); renderCard(); };
+el('randomBtn').onclick=()=>{ if(!state.filtered.length) return; state.index = Math.floor(Math.random()*state.filtered.length); renderList(); renderCard(true); renderStats(); };
+el('markBtn').onclick=()=>{ const w=currentWord(); if(!w) return; setKnown(w,!isKnown(w)); applyFilters(true); };
+el('resetBtn').onclick=()=>{
+  if(!confirm('确认清空当前筛选范围内的已掌握标记吗？')) return;
+  state.filtered.forEach(w => setKnown(w,false));
+  applyFilters(true);
+};
+el('prevBtn').onclick=()=>{ if(state.index>0){state.index--; renderList(); renderCard(); renderStats();} };
+el('nextBtn').onclick=()=>{ if(state.index<state.filtered.length-1){state.index++; renderList(); renderCard(); renderStats();} };
+el('speakWord').onclick=()=>{const w=currentWord(); speak(w?.w,1);};
+el('speakSlow').onclick=()=>{const w=currentWord(); speak(w?.w,0.72);};
+el('speakEx').onclick=()=>{const w=currentWord(); speak(w?.e,0.88);};
+
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)||el('scanDialog').open||el('editDialog').open||el('quizDialog').open) return;
+  if (e.key === 'ArrowLeft') el('prevBtn').click();
+  if (e.key === 'ArrowRight') el('nextBtn').click();
+});
+
+const scanPages = {};
+const editKey=STORAGE_KEY+'_unused_edits';let edits={};
+el('scanBtn').onclick=()=>{const w=currentWord();if(!w||!scanPages[w.src])return;const parts=w.src.split('-');el('scanTitle').textContent=`${w.lesson} · PDF 第 ${Number(parts[1])} 页`;el('scanImage').src=scanPages[w.src];el('scanDialog').showModal();};el('closeScan').onclick=()=>el('scanDialog').close();
+const editFields={w:'editW',f:'editF',c:'editC',e:'editE',ec:'editEC'};el('editBtn').onclick=()=>{const w=currentWord();if(!w)return;for(const [k,id] of Object.entries(editFields))el(id).value=w[k]||'';el('editDialog').showModal();};el('closeEdit').onclick=el('cancelEdit').onclick=()=>el('editDialog').close();el('saveEdit').onclick=()=>{const w=currentWord();if(!w)return;const patch={};for(const [k,id] of Object.entries(editFields))patch[k]=el(id).value.trim();if(!patch.w){alert('词条不能为空');return;}Object.assign(w,patch);edits[w.id]=patch;try{localStorage.setItem(editKey,JSON.stringify(edits))}catch(e){};el('editDialog').close();applyFilters(true);};
+
+// Independent vocabulary test. Results do not modify learning-card mastery.
+const QUIZ_KEY=STORAGE_KEY+'_quiz';
+let quizWrong=Object.fromEntries(dbProgress.filter(p=>p.wrong_count>0).map(p=>[p.vocabulary_id,true]));
+let quiz={questions:[],i:0,results:[],answered:false,active:false};
+const qel=el;
+const qnorm=x=>String(x||'').normalize('NFC').trim().replace(/\s+/g,' ');
+const qfold=x=>qnorm(x).toLowerCase();
+function qid(w){return w.id||wordKey(w)}
+function qsave(){try{localStorage.setItem(QUIZ_KEY,JSON.stringify(quizWrong))}catch(e){}}
+function qshuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function qsimple(w){return !/[\/()]/.test(w.w)&&qnorm(w.w).length>0}
+const qbase=()=>words.filter(w=>qnorm(w.w)&&qnorm(w.c));
+// Exclude ambiguous spelling prompts rather than penalizing another textbook synonym.
+function qspellOK(w){return qsimple(w)&&!qbase().some(v=>v!==w&&qfold(v.c)===qfold(w.c)&&qfold(v.w)!==qfold(w.w))}
+function qpool(){const l=qel('quizLesson').value,scope=qel('quizScope').value,type=qel('quizType').value;return qbase().filter(w=>(l==='all'||w.lesson===l)&&(scope==='all'||scope==='todo'&&!isKnown(w)||scope==='known'&&isKnown(w)||scope==='wrong'&&quizWrong[qid(w)])&&(type!=='spell'||qspellOK(w)))}
+function qavailable(){const n=qpool().length;qel('quizAvailable').textContent=`可检测词汇：${n} 个${qel('quizType').value==='spell'?'（排除含斜线、括号或同释义多词的拼写题）':''}`;qel('quizStart').disabled=n===0;}
+function qview(which){for(const [id,name] of [['quizSetup','setup'],['quizActive','active'],['quizFinished','finished']])qel(id).hidden=which!==name;}
+function qopen(){stopSpeech();qel('quizLesson').value=qel('lessonFilter').value;quiz.active=false;qview('setup');qavailable();qel('quizDialog').showModal()}
+function qclose(){if(quiz.active&&!confirm('检测尚未完成，确认退出本轮检测吗？'))return;quiz.active=false;stopSpeech();qel('quizDialog').close()}
+function qtokens(s){return qfold(s).split(/[；;、，,／/]/).map(x=>x.trim()).filter(Boolean)}
+function qoverlap(a,b){const bset=new Set(qtokens(b));return qtokens(a).some(x=>bset.has(x))}
+function qquestion(w,type){if(type==='mixed')type=qshuffle(qspellOK(w)?['decn','cnde','spell']:['decn','cnde'])[0];if(type==='spell'&&!qspellOK(w))type='cnde';if(type==='spell')return {w,type,prompt:w.c,answer:w.w,options:[]};const field=type==='decn'?'c':'w',promptField=type==='decn'?'w':'c',answer=w[field];const seen=new Set([qfold(answer)]);let options=[answer];const pool=qbase();const candidates=[...qshuffle(pool.filter(v=>v.lesson===w.lesson)),...qshuffle(pool.filter(v=>v.lesson!==w.lesson))];for(const v of candidates){if(options.length>=4)break;if(qfold(v[promptField])===qfold(w[promptField])||qfold(v.w)===qfold(w.w)||qoverlap(v.c,w.c)||seen.has(qfold(v[field])))continue;seen.add(qfold(v[field]));options.push(v[field]);}return {w,type,prompt:w[promptField],answer,options:qshuffle(options)}}
+function qbegin(pool,type){quiz={questions:pool.map(w=>qquestion(w,type)),i:0,results:[],answered:false,active:true};qview('active');qrender()}
+function qstart(){const pool=qshuffle(qpool()),n=qel('quizCount').value;if(!pool.length)return;qbegin(n==='all'?pool:pool.slice(0,Number(n)),qel('quizType').value)}
+function qrender(){const q=quiz.questions[quiz.i];if(!q)return qfinish();quiz.answered=false;qel('quizStep').textContent=`第 ${quiz.i+1} / ${quiz.questions.length} 题 · ${q.w.lesson}`;qel('quizLiveScore').textContent=`答对 ${quiz.results.filter(x=>x.ok).length} 题`;qel('quizProgress').style.width=(quiz.i/quiz.questions.length*100)+'%';qel('quizInstruction').textContent=q.type==='decn'?'请选择对应的中文释义':q.type==='cnde'?'请选择对应的德语单词':'请根据中文释义拼写德语单词';qel('quizPrompt').textContent=q.prompt;qel('quizOptions').replaceChildren();qel('quizWriting').hidden=q.type!=='spell';qel('quizAnswer').value='';qel('quizAnswer').disabled=false;qel('quizSubmit').disabled=false;qel('quizFeedback').hidden=true;qel('quizFeedback').className='quizFeedback';qel('quizNext').hidden=true;qel('quizListen').hidden=true;qel('quizSkip').hidden=false;for(const a of q.options){const b=document.createElement('button');b.textContent=a;b.onclick=()=>qgrade(a);qel('quizOptions').append(b)}if(q.type==='spell')qel('quizAnswer').focus();stopSpeech();if(autoRead.quiz&&q.type==='decn')speak(q.w.w,1,true)}
+function qgrade(answer,skip=false){if(quiz.answered||!quiz.active)return;const q=quiz.questions[quiz.i];if(!skip&&!qnorm(answer))return;quiz.answered=true;const ok=!skip&&qnorm(answer)===qnorm(q.answer);quiz.results.push({q,answer:skip?'（跳过）':answer,ok});if(ok)delete quizWrong[qid(q.w)];else quizWrong[qid(q.w)]=true;syncProgress(q.w,{wrong_count:ok?0:(remoteProgress.get(q.w.id)?.wrong_count||0)+1});for(const b of qel('quizOptions').children){b.disabled=true;if(b.textContent===q.answer)b.classList.add('qRight');else if(b.textContent===answer)b.classList.add('qWrong')}qel('quizAnswer').disabled=true;qel('quizSubmit').disabled=true;qel('quizSkip').hidden=true;qel('quizListen').hidden=false;qel('quizNext').hidden=false;qel('quizNext').textContent=quiz.i===quiz.questions.length-1?'查看成绩':'下一题 →';qel('quizFeedback').className='quizFeedback '+(ok?'good':'bad');qel('quizFeedback').textContent=(ok?'回答正确':skip?'已跳过':'回答错误')+'\n正确答案：'+q.answer+'\n'+q.w.w+' — '+q.w.c+(q.w.f?'\n'+q.w.f:'');qel('quizFeedback').hidden=false;qel('quizLiveScore').textContent=`答对 ${quiz.results.filter(x=>x.ok).length} 题`;qel('quizProgress').style.width=((quiz.i+1)/quiz.questions.length*100)+'%';qel('quizNext').focus();if(autoRead.quiz)speak(q.w.w,1,true)}
+function qnext(){if(!quiz.answered)return;quiz.i++;qrender()}
+function qfinish(){stopSpeech();quiz.active=false;qview('finished');const n=quiz.results.length,correct=quiz.results.filter(x=>x.ok).length,wrong=quiz.results.filter(x=>!x.ok);if(n)writeQueue=writeQueue.then(()=>api("/rest/v1/test_results",{method:"POST",headers:{Prefer:"return=minimal"},body:{user_id:identity.id,level,total_questions:n,correct_count:correct}})).catch(e=>alert("成绩保存失败："+e.message));qel('quizPercent').textContent=(n?Math.round(correct/n*100):0)+'% 正确率';qel('quizTotal').textContent=n;qel('quizCorrect').textContent=correct;qel('quizIncorrect').textContent=wrong.length;qel('quizRetry').disabled=!wrong.length;qel('quizMistakes').replaceChildren();if(!wrong.length)qel('quizMistakes').textContent='本轮没有错题。';for(const r of wrong){const d=document.createElement('div');d.className='quizMistake';const a=document.createElement('strong');a.textContent=r.q.w.w+' — '+r.q.w.c;const b=document.createElement('div');b.className='muted';b.textContent=r.q.w.lesson+' · 你的答案：'+r.answer+'；正确答案：'+r.q.answer;const e=document.createElement('div');e.textContent=r.q.w.e||'';const c=document.createElement('div');c.className='muted';c.textContent=r.q.w.ec||'';d.append(a,b,e,c);qel('quizMistakes').append(d)}}
+qel('quizLesson').innerHTML=qel('lessonFilter').innerHTML;for(const id of ['quizLesson','quizScope','quizType','quizCount'])qel(id).onchange=qavailable;
+qel('quizHeader').onclick=qel('quizOpen').onclick=qopen;qel('quizClose').onclick=qclose;qel('quizDialog').addEventListener('cancel',e=>{e.preventDefault();qclose()});qel('quizStart').onclick=qstart;qel('quizSubmit').onclick=()=>qgrade(qel('quizAnswer').value);qel('quizAnswer').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();qgrade(qel('quizAnswer').value)}});qel('quizSkip').onclick=()=>qgrade('',true);qel('quizNext').onclick=qnext;qel('quizListen').onclick=()=>speak(quiz.questions[quiz.i]?.w.w);qel('quizAgain').onclick=()=>{qview('setup');qavailable()};qel('quizRetry').onclick=()=>{const wrong=quiz.results.filter(x=>!x.ok).map(x=>x.q.w);if(wrong.length)qbegin(qshuffle(wrong),qel('quizType').value)};
+for(const k of ['ä','ö','ü','ß','Ä','Ö','Ü']){const b=document.createElement('button');b.type='button';b.textContent=k;b.onclick=()=>{const input=qel('quizAnswer');if(input.disabled)return;const a=input.selectionStart??input.value.length,z=input.selectionEnd??a;input.setRangeText(k,a,z,'end');input.focus()};qel('quizKeys').append(b)}
+
+el('studyAuto').onclick=()=>setAuto('study');el('quizAuto').onclick=()=>setAuto('quiz');autoButtons();
+applyFilters();studyReady=true;
+}
+</script>
+</html>

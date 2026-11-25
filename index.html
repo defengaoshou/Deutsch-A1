@@ -40,13 +40,117 @@ select,input{width:100%;margin:5px 0 10px}
 #quizDialog{width:min(720px,94vw);padding:24px;max-height:92vh;overflow:auto;box-shadow:0 20px 70px #102b2540}#quizDialog::backdrop{background:#102b25f5}#quizDialog [hidden]{display:none!important}#quizDialog h2{margin:0;font-size:23px}#quizDialog h3{margin:16px 0 8px}#quizDialog label{font-size:14px;font-weight:650}#quizDialog select{margin:6px 0 0}#quizDialog .quizGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}#quizDialog .quizPrompt{padding:26px 16px;background:#f4f7f5;border-radius:14px;text-align:center;margin:16px 0;font-size:clamp(24px,5vw,36px);font-weight:750;overflow-wrap:anywhere}#quizDialog .quizOptions{display:grid;gap:9px}#quizDialog .quizOptions button{text-align:left;white-space:normal;overflow-wrap:anywhere;padding:13px 16px}#quizDialog button.qRight{background:#e0f3e7;color:#16583c;border:2px solid #459969;opacity:1}#quizDialog button.qWrong{background:#fce8e5;color:#9d3327;border:2px solid #cf7568;opacity:1}#quizDialog .quizFeedback{padding:12px 14px;background:#f4f7f5;border-radius:12px;margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere}#quizDialog .quizFeedback.good{color:#21684e}#quizDialog .quizFeedback.bad{color:#9d3327}#quizDialog .quizRow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}#quizDialog .quizResults{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}#quizDialog .quizMistake{border-bottom:1px solid #e3ece7;padding:12px 0;overflow-wrap:anywhere}#quizDialog .quizMistake:last-child{border:0}#quizDialog .quizBig{font-size:40px;font-weight:800;text-align:center;padding:15px}#quizDialog input{font-size:20px}#quizDialog .quizKey button{padding:5px 12px;min-width:38px}#quizDialog .quizKey{display:flex;gap:6px;flex-wrap:wrap}#quizDialog .quizClose{flex-shrink:0}@media(max-width:500px){#quizDialog{padding:16px}#quizDialog .quizGrid{grid-template-columns:1fr}#quizDialog .quizPrompt{padding:20px 8px}}
 button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa2;font-weight:650}
 </style>
-<section id="portal" class="panel" style="max-width:720px;margin:32px auto;padding:24px">
-<small>DEUTSCH / WORTSTUDIO</small><h1>德语单词学习室</h1>
-<form id="loginForm"><label for="loginEmail">邮箱</label><input id="loginEmail" type="email" autocomplete="username" required><label for="loginPass">密码</label><input id="loginPass" type="password" autocomplete="current-password" required><button id="loginSubmit" class="primary" type="submit">登录</button></form>
-<section id="coursePortal" hidden><p id="loginAccount"></p><h2>我的课程</h2><div id="courseButtons" class="controls"></div><button id="portalLogout">退出登录</button></section>
-<section id="adminPortal" hidden><hr><h2>教师 · 课程授权</h2><label for="studentSelect">学生账号</label><select id="studentSelect"></select><div id="enrollmentControls"></div><button id="saveEnroll" class="primary">保存课程授权</button><p id="adminMsg" role="status"></p></section>
-<p id="portalMsg" role="status" style="white-space:pre-wrap"></p>
-</section><style>#portal [hidden],#studyApp[hidden],#portal[hidden]{display:none!important}#enrollmentControls label{display:flex;align-items:center;gap:8px;padding:8px 0}#enrollmentControls input[type=checkbox]{width:auto;margin:0}#portal h2{font-size:20px}#portal button{margin:4px}#portal label{display:block;margin:8px 0 2px}</style>
+<section id="portal" aria-label="Deutsch Wortstudio 登录与课程中心">
+  <div class="portal-shell">
+    <aside class="portal-hero" aria-label="Deutsch Wortstudio">
+      <div class="portal-brand"><span class="portal-logo" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 11c-4.5-3.4-9.1-3.7-15-2v22c5.9-1.7 10.5-1.4 15 2 4.5-3.4 9.1-3.7 15-2V9c-5.9-1.7-10.5-1.4-15 2Zm0 0v22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 16h5m-5 5h5m10-5h5m-5 5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>Deutsch<br><strong>Wortstudio</strong></span></div>
+      <div class="portal-intro"><div class="portal-kicker"><span></span> DEUTSCH LERNEN</div><p class="portal-slogan">Wort für Wort.<br><em>Schritt für Schritt.</em></p><p class="portal-chinese">一词一句，循序渐进。<br>你的德语专属学习空间。</p></div>
+      <div class="portal-art" aria-hidden="true"><div class="art-card art-back"><span>WORTSCHATZ</span><b>Ä · Ö · Ü</b><i></i><i></i></div><div class="art-card art-front"><span>DEUTSCH &nbsp; / &nbsp; LERNEN</span><b>Aa</b><div class="art-lines"><i></i><i></i></div><div class="art-chip"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 4V5L8 9H4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M16 9c2 1.7 2 4.3 0 6m3-9c3.5 3 3.5 9 0 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div></div></div>
+      <div class="portal-hero-footer"><span>Wortschatz</span><span>Übung</span><span>Aussprache</span></div>
+    </aside>
+    <div class="portal-content">
+      <form id="loginForm">
+        <div class="portal-overline">WILLKOMMEN ZURÜCK</div>
+        <h1>欢迎回来</h1>
+        <p class="portal-subtitle">登录你的德语单词学习室。</p>
+        <label for="loginEmail">邮箱 <span>E-Mail</span></label>
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="请输入邮箱地址" required>
+        <label for="loginPass">密码 <span>Passwort</span></label>
+        <input id="loginPass" type="password" autocomplete="current-password" placeholder="请输入登录密码" required>
+        <button id="loginSubmit" class="primary" type="submit"><span>登录学习室</span><span aria-hidden="true">→</span></button>
+        <p class="portal-help">仅限已授权学员使用。<br>如需开通课程或找回密码，请联系你的老师。</p>
+      </form>
+      <section id="coursePortal" hidden>
+        <div class="portal-overline">MEINE KURSE</div><h1>我的课程</h1><p id="loginAccount" class="portal-account"></p>
+        <div id="courseButtons" class="controls"></div><button id="portalLogout">退出登录</button>
+      </section>
+      <section id="adminPortal" hidden><hr><div class="portal-overline">KURSVERWALTUNG</div><h2>教师 · 课程授权</h2><label for="studentSelect">学生账号</label><select id="studentSelect"></select><div id="enrollmentControls"></div><button id="saveEnroll" class="primary">保存课程授权</button><p id="adminMsg" role="status"></p></section>
+      <p id="portalMsg" role="status" aria-live="polite"></p>
+      <div class="portal-footer"><span class="portal-footer-dot"></span> Deutsch Wortstudio <span class="portal-footer-sep">·</span> 课程专属学习平台</div>
+    </div>
+  </div>
+</section>
+<style>
+#portal [hidden],#studyApp[hidden],#portal[hidden]{display:none!important}
+#portal{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 24px;background:radial-gradient(ellipse at 8% 0%,#e0ece4 0%,transparent 46%),#f1f5f2;color:#193b31}
+#portal .portal-shell{display:grid;grid-template-columns:1fr 1fr;width:min(100%,1000px);min-height:620px;border-radius:28px;overflow:hidden;background:#fff;border:1px solid #dae5df;box-shadow:0 22px 70px #18342e15,0 3px 12px #18342e08}
+#portal .portal-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;min-height:620px;padding:38px 42px;color:#f4f7f0;background:radial-gradient(ellipse at 80% 72%,#397858 0%,transparent 55%),linear-gradient(150deg,#143e34,#1d5843 70%,#2b6b50)}
+#portal .portal-hero:before,#portal .portal-hero:after{content:"";position:absolute;z-index:-1;border:1px solid #ffffff17;border-radius:50%;width:480px;height:480px;right:-210px;bottom:-155px;pointer-events:none}
+#portal .portal-hero:after{width:570px;height:570px;right:-255px;bottom:-200px}
+#portal .portal-brand{display:flex;align-items:center;gap:13px;font-size:17px;line-height:1.18;letter-spacing:.015em}
+#portal .portal-brand strong{font-size:22px;letter-spacing:-.025em}
+#portal .portal-logo{width:48px;height:48px;display:grid;place-items:center;border:1px solid #ffffff32;border-radius:15px;background:#ffffff10;color:#e5eed7}
+#portal .portal-logo svg{width:29px;height:29px}
+#portal .portal-intro{margin-top:63px}
+#portal .portal-kicker,#portal .portal-overline{font-size:11px;letter-spacing:.17em;font-weight:700}
+#portal .portal-kicker{display:flex;align-items:center;gap:9px;color:#d0e1bf}
+#portal .portal-kicker span{width:18px;height:1px;background:#c6d7ab}
+#portal .portal-slogan{font-size:clamp(28px,3.5vw,43px);font-weight:650;line-height:1.12;letter-spacing:-.045em;margin:16px 0}
+#portal .portal-slogan em{font-weight:500;font-style:normal;color:#c8ddb4}
+#portal .portal-chinese{font-size:14px;color:#deebe2;line-height:1.85;margin:0}
+#portal .portal-art{position:relative;flex:1;min-height:176px;margin:22px 0 12px;pointer-events:none}
+#portal .art-card{position:absolute;width:190px;height:145px;padding:16px;border-radius:15px;box-shadow:0 12px 26px #112c2540}
+#portal .art-back{top:14px;left:22%;transform:rotate(10deg);background:#b9cfac;color:#234737}
+#portal .art-front{top:14px;left:8%;transform:rotate(-7deg);background:#f7f8ed;color:#224a39}
+#portal .art-card span{font-size:9px;font-weight:750;letter-spacing:.11em}
+#portal .art-card b{display:block;font-family:Georgia,serif;font-weight:500;font-size:49px;line-height:1.12;margin:7px 0}
+#portal .art-back b{font-size:30px;margin-top:17px}
+#portal .art-lines i,#portal .art-back i{display:block;height:4px;width:64px;border-radius:8px;background:#a4b7a1;margin:7px 0}
+#portal .art-lines i+i,#portal .art-back i+i{width:42px}
+#portal .art-chip{position:absolute;right:13px;bottom:15px;width:35px;height:35px;display:grid;place-items:center;border-radius:50%;background:#e1ecd8;color:#22553e}
+#portal .art-chip svg{width:20px;height:20px}
+#portal .portal-hero-footer{display:flex;flex-wrap:wrap;gap:16px;font-size:11px;letter-spacing:.025em;color:#d0e0d1}
+#portal .portal-hero-footer span+span:before{content:"·";margin-right:16px;color:#b4cba8}
+#portal .portal-content{min-width:0;padding:48px 48px 30px;display:flex;flex-direction:column;justify-content:center}
+#portal .portal-overline{color:#587c62;margin-bottom:12px}
+#portal h1{font-size:32px;line-height:1.25;letter-spacing:-.035em;margin:0 0 10px;font-weight:750}
+#portal .portal-subtitle{color:#667c73;margin:0 0 35px;font-size:15px}
+#portal label{display:block;margin:18px 0 7px;font-size:13px;font-weight:650;color:#28483b}
+#portal label span{color:#789087;font-size:11px;font-weight:400;margin-left:6px}
+#portal input:not([type=checkbox]),#portal select{width:100%;min-height:48px;border:1px solid #cfddd4;background:#f9fbf9;border-radius:11px;margin:0;padding:12px 14px;color:#18382c;outline:none}
+#portal input::placeholder{color:#88978e}
+#portal input:focus,#portal select:focus{border-color:#458365;box-shadow:0 0 0 3px #45836524}
+#portal button:focus-visible{outline:3px solid #96bd9b;outline-offset:3px}
+#portal #loginSubmit{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:24px;min-height:50px;padding:13px 17px;font-weight:700;box-shadow:0 5px 14px #21684e22;transition:background .15s}
+#portal button.primary:hover:not(:disabled){background:#184e3a}
+#portal .portal-help{border-top:1px solid #e7eee9;margin-top:25px;padding-top:18px;font-size:12px;color:#71837a;line-height:1.85}
+#portal #portalMsg,#portal #adminMsg{font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;color:#4b695a;margin:10px 0}
+#portal #portalMsg:empty,#portal #adminMsg:empty{display:none}
+#portal .portal-footer{display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:#789087;font-size:11px;margin-top:22px;padding-top:9px}
+#portal .portal-footer-dot{display:block;width:6px;height:6px;border-radius:50%;background:#81a98b}
+#portal .portal-footer-sep{color:#adbbb2}
+#portal:has(#loginForm[hidden]) .portal-shell{grid-template-columns:260px minmax(0,1fr);min-height:510px}
+#portal:has(#loginForm[hidden]) .portal-hero{min-height:100%;padding:30px 25px}
+#portal:has(#loginForm[hidden]) .portal-intro{margin-top:45px}
+#portal:has(#loginForm[hidden]) .portal-slogan{font-size:27px}
+#portal:has(#loginForm[hidden]) .portal-art{display:none}
+#portal:has(#loginForm[hidden]) .portal-hero-footer{margin-top:auto;padding-top:24px;gap:7px}
+#portal:has(#loginForm[hidden]) .portal-hero-footer span+span:before{margin-right:7px}
+#portal:has(#loginForm[hidden]) .portal-content{justify-content:flex-start}
+#portal .portal-account{font-size:13px;color:#667f72;overflow-wrap:anywhere;margin:4px 0 20px}
+#portal #courseButtons{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
+#portal #courseButtons button{min-height:58px;font-weight:700}
+#portal #portalLogout{font-size:13px;padding:8px 14px}
+#portal hr{border:0;border-top:1px solid #e0e9e2;margin:24px 0}
+#portal h2{font-size:21px;margin:6px 0 16px}
+#portal #enrollmentControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}
+#portal #enrollmentControls label{display:flex;align-items:center;gap:8px;margin:0;padding:10px;border:1px solid #dfe9e1;border-radius:9px;background:#f8faf8;overflow-wrap:anywhere}
+#portal #enrollmentControls input[type=checkbox]{width:16px;height:16px;flex-shrink:0;margin:0;accent-color:#21684e}
+@media(max-width:760px){
+#portal{padding:16px;align-items:flex-start}
+#portal .portal-shell,#portal:has(#loginForm[hidden]) .portal-shell{grid-template-columns:1fr;min-height:0;border-radius:20px;max-width:480px}
+#portal .portal-hero,#portal:has(#loginForm[hidden]) .portal-hero{min-height:0;padding:23px 26px}
+#portal .portal-intro{margin-top:20px}
+#portal .portal-slogan{font-size:28px;margin:10px 0}
+#portal .portal-chinese{font-size:12px;line-height:1.6}
+#portal .portal-art,#portal .portal-hero-footer,#portal:has(#loginForm[hidden]) .portal-intro,#portal:has(#loginForm[hidden]) .portal-hero-footer{display:none}
+#portal .portal-content{padding:30px 25px 25px}
+#portal h1{font-size:28px}
+#portal .portal-subtitle{margin-bottom:22px}
+#portal .portal-help{margin-top:20px}
+}
+@media(max-width:350px){#portal{padding:8px}#portal .portal-content{padding:24px 16px}#portal #enrollmentControls{grid-template-columns:1fr}}
+</style>
 <div id="studyApp" hidden><header>
   <div>
     <small id="studySubtitle">DEUTSCH / WORTSTUDIO</small>

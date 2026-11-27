@@ -57,7 +57,7 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
 </header>
 <div class="layout">
   <aside class="panel sidebar">
-    <label>教材单元</label>
+    <label for="lessonFilter" id="lessonFilterLabel">教材单元</label>
     <select id="lessonFilter">
       <option value="all">全部单元</option>
       <option value="Lektion 1">Lektion 1 · Sommerkurs in Leipzig</option>
@@ -120,6 +120,13 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
       <div class="de" id="example"></div>
       <div class="cn" id="exampleCn"></div>
     </div>
+    <section id="examDetails" hidden style="margin:14px 0;padding:15px 18px;border:1px solid #dce9df;border-radius:14px;background:#f7faf7">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.05em;color:#537665">必背词组 · WENDUNGEN</div>
+      <div id="examPhrase" lang="de" style="font-size:18px;font-weight:650;white-space:pre-line;overflow-wrap:anywhere;margin:8px 0"></div>
+      <div id="examPhraseCn" class="cn" style="white-space:pre-line;color:#45675b"></div>
+      <div id="examCategory" style="font-size:12px;color:#537665;margin-top:12px;overflow-wrap:anywhere"></div>
+      <div id="examNotes" style="font-size:13px;color:#537665;white-space:pre-line;overflow-wrap:anywhere;margin-top:10px"></div>
+    </section>
 
     <div class="controls">
       <button id="speakWord">朗读单词</button>
@@ -140,7 +147,7 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
 <div class="modalHead" style="flex-wrap:wrap"><h2 id="quizTitle">单词检测</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="quizAuto" aria-pressed="true">自动朗读：开</button><button id="quizClose" class="quizClose">返回背诵</button></div></div>
 <p id="quizVoiceStatus" role="status" style="font-size:12px;color:#586d63;margin:8px 0" hidden></p>
 <section id="quizSetup">
-<div class="quizGrid"><div><label for="quizLesson">教材单元</label><select id="quizLesson"></select></div><div><label for="quizScope">检测范围</label><select id="quizScope"><option value="all">全部词汇</option><option value="todo">未掌握词汇</option><option value="known">已掌握词汇</option><option value="wrong">历史错题</option></select></div><div><label for="quizType">题型</label><select id="quizType"><option value="decn">德语 → 中文（选择）</option><option value="cnde">中文 → 德语（选择）</option><option value="spell">中文 → 德语（拼写）</option><option value="mixed">混合检测</option></select></div><div><label for="quizCount">题量</label><select id="quizCount"><option value="10">10 题</option><option value="20" selected>20 题</option><option value="30">30 题</option><option value="50">50 题</option><option value="all">全部可出题词汇</option></select></div></div>
+<div class="quizGrid"><div><label for="quizLesson" id="quizLessonLabel">教材单元</label><select id="quizLesson"></select></div><div><label for="quizScope">检测范围</label><select id="quizScope"><option value="all">全部词汇</option><option value="todo">未掌握词汇</option><option value="known">已掌握词汇</option><option value="wrong">历史错题</option></select></div><div><label for="quizType">题型</label><select id="quizType"><option value="decn">德语 → 中文（选择）</option><option value="cnde">中文 → 德语（选择）</option><option value="spell">中文 → 德语（拼写）</option><option value="mixed">混合检测</option></select></div><div><label for="quizCount">题量</label><select id="quizCount"><option value="10">10 题</option><option value="20" selected>20 题</option><option value="30">30 题</option><option value="50">50 题</option><option value="all">全部可出题词汇</option></select></div></div>
 <div id="quizAvailable" class="muted" style="margin:16px 0" aria-live="polite"></div>
 <div class="controls"><button id="quizStart" class="primary">开始检测</button></div>
 </section>
@@ -191,19 +198,20 @@ ui("loginForm").onsubmit=async e=>{
   ui("loginForm").hidden=true;ui("coursePortal").hidden=false;
   const levels=courseRows.filter(c=>admin||c.published);
   const box=ui("courseButtons");box.replaceChildren();
-  for(const c of levels){const btn=document.createElement("button");btn.textContent=c.level+(c.published?"":" · 未发布");btn.className="primary";btn.onclick=()=>loadCourse(c.level,btn);box.append(btn)}
+  for(const c of levels){const btn=document.createElement("button");btn.textContent=courseLabel(c.level)+(c.published?"":" · 未发布");btn.className="primary";btn.onclick=()=>loadCourse(c.level,btn);box.append(btn)}
   say(levels.length?"请选择课程。":"暂未开通课程，请联系教师。");
   if(admin){ui("adminPortal").hidden=false;try{await initAdmin()}catch(err){ui("adminMsg").textContent="读取学生列表失败："+err.message}}
  }catch(err){session=null;identity=null;ui("loginForm").hidden=false;ui("coursePortal").hidden=true;ui("adminPortal").hidden=true;say("登录或读取权限失败："+err.message)}
  finally{ui("loginSubmit").disabled=false}
 };
+function courseLabel(level){return level==="B1_GOETHE"?"歌德 B1 备考词汇":level}
 async function loadCourse(level,btn){
  btn.disabled=true;say("正在读取已授权词库…");
  try{
-  const rows=await allRows("vocabulary","select=id,level,lesson_no,sort_order,word,word_form,meaning_zh,example_de,example_zh,visual&level=eq."+encodeURIComponent(level)+"&order=lesson_no.asc,sort_order.asc,id.asc");
+  const rows=await allRows("vocabulary","select=id,level,lesson_no,sort_order,word,word_form,meaning_zh,example_de,example_zh,visual"+(level==="B1_GOETHE"?",exam_details":"")+"&level=eq."+encodeURIComponent(level)+"&order=lesson_no.asc,sort_order.asc,id.asc");
   if(!rows.length){say("该课程暂无可访问词汇。");return}
   const progress=await allRows("learning_progress","select=vocabulary_id,mastered,wrong_count&user_id=eq."+encodeURIComponent(identity.id)+"&level=eq."+encodeURIComponent(level)+"&order=vocabulary_id.asc");
-  ui("studyTitle").textContent=level+" · 单词学习室";ui("studySubtitle").textContent="DEUTSCH / "+level+" / WORTSTUDIO";ui("cardCount").textContent="共 "+rows.length+" 个单词卡";ui("levelBadge").textContent="教材等级："+level;
+  ui("studyTitle").textContent=courseLabel(level)+" · 单词学习室";ui("studySubtitle").textContent="DEUTSCH / "+(level==="B1_GOETHE"?"GOETHE B1":level)+" / WORTSTUDIO";ui("cardCount").textContent="共 "+rows.length+" 个单词卡";ui("levelBadge").textContent=(level==="B1_GOETHE"?"备考类别：B1":"教材等级："+level);
   ui("portal").hidden=true;ui("studyApp").hidden=false;
   startStudy(rows,level,progress);
  }catch(err){ui("studyApp").hidden=true;ui("portal").hidden=false;say("加载失败："+err.message)}finally{btn.disabled=false}
@@ -222,7 +230,7 @@ async function loadEnrollments(){
  if(!id)return;
  grants=await api("/rest/v1/enrollments?select=level,active,valid_until&user_id=eq."+encodeURIComponent(id));
  if(ui("studentSelect").value!==id)return;
- for(const c of courseRows){const lab=document.createElement("label"), cb=document.createElement("input");cb.type="checkbox";cb.value=c.level;const existing=grants.find(x=>x.level===c.level);cb.checked=!!existing?.active;lab.append(cb,document.createTextNode(c.level+(c.published?"":"（未发布）")+(existing?.valid_until?" · 到期 "+existing.valid_until.slice(0,10):"")));wrap.append(lab)}
+ for(const c of courseRows){const lab=document.createElement("label"), cb=document.createElement("input");cb.type="checkbox";cb.value=c.level;const existing=grants.find(x=>x.level===c.level);cb.checked=!!existing?.active;lab.append(cb,document.createTextNode(courseLabel(c.level)+(c.published?"":"（未发布）")+(existing?.valid_until?" · 到期 "+existing.valid_until.slice(0,10):"")));wrap.append(lab)}
  ui("saveEnroll").disabled=false;
 }
 async function saveEnrollments(){
@@ -234,18 +242,20 @@ async function saveEnrollments(){
  }finally{ui("saveEnroll").disabled=false;ui("studentSelect").disabled=false}
 }
 function startStudy(rows,level,dbProgress){
-const words = rows.map(r=>({id:r.id,w:r.word,f:r.word_form,c:r.meaning_zh,e:r.example_de,ec:r.example_zh,p:r.visual,lesson:'Lektion '+r.lesson_no,lessonNo:r.lesson_no}));
+const words = rows.map(r=>({id:r.id,w:r.word,f:r.word_form,c:r.meaning_zh,e:r.example_de,ec:r.example_zh,p:r.visual,lesson:(level==="B1_GOETHE"?"Thema ":"Lektion ")+r.lesson_no,lessonNo:r.lesson_no,x:r.exam_details||{}}));
 const LESSON_META = {"Lektion 1": {"title": "Sommerkurs in Leipzig", "short": "L1"}, "Lektion 2": {"title": "Möller oder Müller?", "short": "L2"}, "Lektion 3": {"title": "Arbeiten im Café", "short": "L3"}, "Lektion 4": {"title": "Lecker essen!", "short": "L4"}, "Lektion 5": {"title": "Hast du Zeit?", "short": "L5"}, "Lektion 6": {"title": "Meine Stadt", "short": "L6"}, "Lektion 7": {"title": "Der neue Job", "short": "L7"}, "Lektion 8": {"title": "Freizeit und Hobbys", "short": "L8"}, "Lektion 9": {"title": "Zuhause", "short": "L9"}, "Lektion 10": {"title": "Familie Schumann", "short": "L10"}, "Lektion 11": {"title": "Viel Arbeit", "short": "L11"}, "Lektion 12": {"title": "Essen und Trinken", "short": "L12"}, "Lektion 13": {"title": "Fit und gesund", "short": "L13"}, "Lektion 14": {"title": "Voll im Trend", "short": "L14"}, "Lektion 15": {"title": "Jahreszeiten und Feste", "short": "L15"}, "Lektion 16": {"title": "Ab in den Urlaub!", "short": "L16"}};
 const A2_LESSON_TITLES=["Klassentreffen","Mobil leben","Wohnen und Zusammenleben","Hast du Netz?","So arbeiten wir heute","Was liest du gerade?","Leben mit Tieren","Global und regional","Alltagsleben","Festival – Sommer","Natur und Umwelt","Reparieren und Selbermachen","Gipfelstürmer","Freunde fürs Leben","Leben auf dem Land","Glück und Lebensträume"];
 if(level!=="A1"){
  for(const key of Object.keys(LESSON_META))delete LESSON_META[key];
- for(const w of words)if(!LESSON_META[w.lesson])LESSON_META[w.lesson]={title:level==="A2"?(A2_LESSON_TITLES[w.lessonNo-1]||level):level,short:"L"+w.lessonNo};
+ for(const w of words)if(!LESSON_META[w.lesson])LESSON_META[w.lesson]={title:level==="B1_GOETHE"?(w.x.topic||w.lesson):level==="A2"?(A2_LESSON_TITLES[w.lessonNo-1]||level):level,short:(level==="B1_GOETHE"?"T":"L")+w.lessonNo};
  const filter=document.getElementById("lessonFilter");
- filter.replaceChildren(new Option("全部单元","all"));
+ filter.replaceChildren(new Option(level==="B1_GOETHE"?"全部话题":"全部单元","all"));
  for(const l of [...new Set(words.map(w=>w.lesson))])filter.add(new Option(l+" · "+LESSON_META[l].title,l));
 }else{
  for(const w of words)if(!LESSON_META[w.lesson])LESSON_META[w.lesson]={title:level,short:"L"+w.lessonNo};
 }
+document.getElementById("lessonFilterLabel").textContent=level==="B1_GOETHE"?"备考话题":"教材单元";
+document.getElementById("quizLessonLabel").textContent=level==="B1_GOETHE"?"备考话题":"教材单元";
 const STORAGE_KEY = "wortstudio_preview_"+identity.id+"_"+level;
 const state = {filtered:[...words], index:0, hideCn:false, progress: loadProgress()};
 
@@ -284,7 +294,7 @@ function applyFilters(keepCurrent=false){
   state.filtered = words.filter(w => {
     if (lesson !== 'all' && w.lesson !== lesson) return false;
     if (q) {
-      const text = [w.w,w.f,w.c,w.e,w.ec,w.lesson].join(' | ').toLowerCase();
+      const text = [w.w,w.f,w.c,w.e,w.ec,w.lesson,w.x.topic,w.x.group,w.x.estimated_level,w.x.phrase_de,w.x.phrase_zh].join(' | ').toLowerCase();
       if (!text.includes(q)) return false;
     }
     const known = isKnown(w);
@@ -329,6 +339,7 @@ function renderList(){
 function renderCard(forceRead=false){
   const w = state.filtered[state.index];
   if(!w) {
+    el('examDetails').hidden=true;
     el('word').textContent='没有匹配结果';
     el('form').textContent='';
     el('meaning').textContent='';
@@ -345,7 +356,16 @@ function renderCard(forceRead=false){
     autoStudy(null);
     return;
   }
-  el('markBtn').disabled=false;el('scanActions').hidden=!w.src;el('exampleLabel').textContent=w.ocr?'教材例句':'教材原句 · BEISPIELSATZ';
+  el('markBtn').disabled=false;el('scanActions').hidden=!w.src;el('exampleLabel').textContent=level==="B1_GOETHE"?"必背例句 · BEISPIELSATZ":w.ocr?'教材例句':'教材原句 · BEISPIELSATZ';
+  el('examDetails').hidden=level!=="B1_GOETHE";
+  if(level==="B1_GOETHE"){
+    el('examPhrase').textContent=w.x.phrase_de||'—';
+    el('examPhraseCn').textContent=w.x.phrase_zh||'';
+    el('examPhraseCn').hidden=state.hideCn;
+    el('examCategory').textContent=[w.x.group&&w.x.group!=='—'&&!state.hideCn?'归类：'+w.x.group:'',w.x.estimated_level?'预估级别：'+w.x.estimated_level:''].filter(Boolean).join(' · ');
+    el('examNotes').textContent=w.x.notes||'';
+    el('examNotes').hidden=state.hideCn||!w.x.notes;
+  }
   el('prevBtn').disabled = state.index===0;
   el('nextBtn').disabled = state.index===state.filtered.length-1;
   el('visual').textContent = w.p || '📘';

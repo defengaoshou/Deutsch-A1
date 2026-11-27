@@ -51,10 +51,10 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
 <header><div><small>DEUTSCH / A1 / GRAMMATIK</small><h1>A1 · 语法学习室</h1></div><button id="grammarBack">返回课程</button></header>
 <div class="layout grammar-layout">
 <aside class="panel"><h2>语法专题</h2><div id="grammarList" class="list"></div></aside>
-<main class="panel grammar-main"><div id="grammarNumber" class="muted"></div><h1 id="grammarTitle"></h1><p id="grammarIntro"></p><p id="grammarSource" class="grammar-source"></p><section><h2>语法规则</h2><ul id="grammarRules"></ul></section><section><h2>变位与用法</h2><div id="grammarTable" class="grammar-table-wrap"></div></section><section><h2>例句 · Beispiele</h2><div id="grammarExamples"></div><p id="grammarAudioStatus" role="status" class="muted"></p></section><section><h2>随堂练习 · Übungen</h2><div id="grammarExercises"></div><p id="grammarScore" role="status"></p><button id="grammarReset">重新练习</button></section></main>
+<main class="panel grammar-main"><div id="grammarNumber" class="muted"></div><h1 id="grammarTitle"></h1><p id="grammarIntro"></p><p id="grammarSource" class="grammar-source"></p><section><h2>语法规则</h2><ul id="grammarRules"></ul></section><section><h2>变位与用法</h2><div id="grammarTable" class="grammar-table-wrap"></div></section><section><h2>例句 · Beispiele</h2><div id="grammarExamples"></div><p id="grammarAudioStatus" role="status" class="muted"></p></section><section id="grammarPractice"><h2>语法训练 · Übungen</h2><div class="grammar-training-controls"><label for="grammarType">训练方式</label><select id="grammarType"><option value="all">专题完整训练</option><option value="choice">选择题</option><option value="fill">动词 / 冠词填空</option><option value="reorder">句子排序</option><option value="correct">纠错题</option><option value="transform">句型转换</option><option value="translate">中译德</option><option value="mixed">本单元综合检测（每专题3题）</option></select><button id="grammarStart">开始训练</button></div><p id="grammarPracticeNote" class="muted" aria-live="polite"></p><div id="grammarExercises"></div><p id="grammarScore" role="status"></p><div class="grammar-options"><button id="grammarRetry" disabled>错题 / 待核对重练</button><button id="grammarReset">重新练习</button></div></section></main>
 </div></section>
 <style>
-#grammarApp[hidden]{display:none!important}#grammarApp h2{font-size:19px;margin:0 0 14px}#grammarApp .grammar-main h1{font-size:28px;margin:8px 0 12px}#grammarApp .grammar-main section{margin-top:26px;border-top:1px solid #e4ebe5;padding-top:20px}#grammarApp .grammar-main{min-width:0}#grammarApp .grammar-main li{margin:8px 0}#grammarApp .grammar-table-wrap{overflow-x:auto}#grammarApp table{width:100%;border-collapse:collapse;font-size:14px}#grammarApp th,#grammarApp td{text-align:left;padding:12px;border-bottom:1px solid #e1e9e4}#grammarApp th{background:#e9f2eb}#grammarApp .grammar-example{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #edf1ee}#grammarApp .grammar-example strong{display:block;font-size:17px;margin-bottom:5px}#grammarApp .grammar-example span{font-size:14px;color:#637970}#grammarApp .grammar-example button{flex-shrink:0;font-size:13px}#grammarApp .grammar-question{background:#f6f9f6;border:1px solid #e0e9e2;border-radius:12px;margin:12px 0;padding:14px}#grammarApp .grammar-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#grammarApp .grammar-feedback{font-size:13px;margin-top:8px}#grammarApp .grammar-correct{background:#e0f0e4;border-color:#80b28b;color:#21553a}#grammarApp .grammar-wrong{background:#fce9e7;border-color:#d5a29e;color:#873a31}#grammarApp #grammarScore{font-weight:700}#grammarApp .grammar-source{font-size:12px;color:#6d857e}
+#grammarApp .grammar-training-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}#grammarApp .grammar-training-controls select{width:auto;max-width:100%;margin:0;flex:1}#grammarApp .grammar-question input{max-width:100%;margin:10px 0 4px}#grammarApp .grammar-answer-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap}#grammarApp .grammar-answer-line button{padding:6px 10px}#grammarApp .grammar-token-area{min-height:48px;border:1px dashed #93b5a1;border-radius:9px;padding:8px;margin:10px 0;display:flex;gap:6px;flex-wrap:wrap}#grammarApp .grammar-token-area button,#grammarApp .grammar-options button{white-space:normal;overflow-wrap:anywhere}#grammarApp .grammar-feedback{white-space:pre-wrap;overflow-wrap:anywhere}#grammarApp .grammar-mixed>.grammar-main section:not(#grammarPractice){display:none}#grammarApp .grammar-main.grammar-mixed>section:not(#grammarPractice){display:none}#grammarApp .grammar-kind{display:block;color:#547765;font-size:12px;margin-bottom:6px}#grammarApp .grammar-summary{font-size:14px;color:#426853;line-height:1.7}#grammarApp .grammar-training-controls button{white-space:nowrap}#grammarApp[hidden]{display:none!important}#grammarApp h2{font-size:19px;margin:0 0 14px}#grammarApp .grammar-main h1{font-size:28px;margin:8px 0 12px}#grammarApp .grammar-main section{margin-top:26px;border-top:1px solid #e4ebe5;padding-top:20px}#grammarApp .grammar-main{min-width:0}#grammarApp .grammar-main li{margin:8px 0}#grammarApp .grammar-table-wrap{overflow-x:auto}#grammarApp table{width:100%;border-collapse:collapse;font-size:14px}#grammarApp th,#grammarApp td{text-align:left;padding:12px;border-bottom:1px solid #e1e9e4}#grammarApp th{background:#e9f2eb}#grammarApp .grammar-example{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #edf1ee}#grammarApp .grammar-example strong{display:block;font-size:17px;margin-bottom:5px}#grammarApp .grammar-example span{font-size:14px;color:#637970}#grammarApp .grammar-example button{flex-shrink:0;font-size:13px}#grammarApp .grammar-question{background:#f6f9f6;border:1px solid #e0e9e2;border-radius:12px;margin:12px 0;padding:14px}#grammarApp .grammar-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#grammarApp .grammar-feedback{font-size:13px;margin-top:8px}#grammarApp .grammar-correct{background:#e0f0e4;border-color:#80b28b;color:#21553a}#grammarApp .grammar-wrong{background:#fce9e7;border-color:#d5a29e;color:#873a31}#grammarApp #grammarScore{font-weight:700}#grammarApp .grammar-source{font-size:12px;color:#6d857e}
 @media(max-width:760px){#grammarApp .grammar-layout{grid-template-columns:1fr;padding:0 12px;gap:12px}#grammarApp .grammar-main{padding:16px}#grammarApp .grammar-main h1{font-size:23px}}
 </style>
 <div id="studyApp" hidden><header>
@@ -244,14 +244,69 @@ function renderGrammar(row){
  const examples=ui("grammarExamples");examples.replaceChildren();for(const e of c.examples||[]){const item=grammarNode("div",undefined,"grammar-example"),words=grammarNode("div"),de=grammarNode("strong",e.de);de.lang="de";words.append(de,grammarNode("span",e.zh));const b=grammarNode("button","朗读");b.onclick=()=>grammarSpeak(e.de);item.append(words,b);examples.append(item)}
  renderGrammarExercises(row);
 }
-function renderGrammarExercises(row){
- const items=row.content?.exercises||[],wrap=ui("grammarExercises");wrap.replaceChildren();let count=0,correct=0;
- const score=()=>{ui("grammarScore").textContent="已答 "+count+" / "+items.length+" · 答对 "+correct+" 题"+(count===items.length&&items.length?" · 本轮完成":"")};score();
- for(const [i,e] of items.entries()){const q=grammarNode("div",undefined,"grammar-question");q.append(grammarNode("strong",(i+1)+". "+e.prompt));const options=grammarNode("div",undefined,"grammar-options"),feedback=grammarNode("div","","grammar-feedback");let answered=false;
-  for(const option of e.options||[]){const b=grammarNode("button",option);b.onclick=()=>{if(answered)return;answered=true;count++;const ok=option===e.answer;if(ok)correct++;for(const x of options.children){x.disabled=true;if(x.textContent===e.answer)x.classList.add("grammar-correct")}if(!ok)b.classList.add("grammar-wrong");feedback.textContent=(ok?"回答正确。":"正确答案："+e.answer+"。")+(e.explanation||"");score()};options.append(b)}
-  q.append(options,feedback);wrap.append(q)
+const GRAMMAR_TYPES={choice:"选择题",fill:"填空题",reorder:"句子排序",correct:"纠错题",transform:"句型转换",translate:"中译德"};
+function grammarShuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function grammarNormalize(v){return String(v??"").normalize("NFC").trim().replace(/\s+/g," ").replace(/\.$/,"").trim()}
+function grammarQuestionType(e){return e.type||"choice"}
+function grammarModeItems(row,mode){
+ const base=(row.content?.exercises||[]).map(e=>({...e,topic:row.title_zh}));
+ if(mode==="mixed"){
+ const unit=row.content?.unit_no;const rows=grammarRows.filter(r=>unit? r.content?.unit_no===unit:r.id===row.id);
+ const result=[];
+ for(const r of rows){const list=(r.content?.exercises||[]).map(e=>({...e,topic:r.title_zh}));
+ const a=grammarShuffle(list.filter(e=>grammarQuestionType(e)==="fill"));
+ const b=grammarShuffle(list.filter(e=>["correct","transform","reorder"].includes(grammarQuestionType(e))));
+ const c=grammarShuffle(list.filter(e=>grammarQuestionType(e)==="translate"));
+ const chosen=[a[0],b[0],c[0]].filter(Boolean);
+ if(chosen.length<3)chosen.push(...grammarShuffle(list.filter(e=>!chosen.includes(e))).slice(0,3-chosen.length));
+ result.push(...chosen);
  }
- ui("grammarReset").onclick=()=>renderGrammarExercises(row);
+ return grammarShuffle(result)
+ }
+ return mode==="all"?base:base.filter(e=>grammarQuestionType(e)===mode)
+}
+function renderGrammarExercises(row,mode="all",retry=null){
+ const items=retry||grammarModeItems(row,mode),wrap=ui("grammarExercises");
+ ui("grammarType").value=mode;wrap.replaceChildren();
+ document.querySelector("#grammarApp .grammar-main").classList.toggle("grammar-mixed",mode==="mixed");
+ let count=0,correct=0,review=0;const missed=[];
+ ui("grammarPracticeNote").textContent=mode==="mixed"?"综合检测：暂时隐藏规则和例句，每个专题抽取3题。完成后建议重新练习错题。":"建议先看规则，再做完整训练。书写题检查大小写和拼写，末尾句号可省略；翻译题按参考答案自动匹配，其他合理表达需人工核对。";
+ const score=()=>{let message="已答 "+count+" / "+items.length+" · 自动答对 "+correct+" 题"+(review?" · 待核对 "+review+" 题":"");if(items.length&&count===items.length)message+=" · 本轮完成（自动正确率 "+Math.round(correct/items.length*100)+"%）"+(missed.length?" · 建议重练未通过题目":" · 建议隔天再做综合检测");ui("grammarScore").textContent=message;ui("grammarRetry").disabled=count!==items.length||!missed.length};score();
+ if(!items.length)wrap.append(grammarNode("p","当前专题没有该题型，请选择其他训练方式。","muted"));
+ for(const [i,e] of items.entries()){
+  const kind=grammarQuestionType(e),q=grammarNode("div",undefined,"grammar-question"),feedback=grammarNode("div","","grammar-feedback");
+  feedback.setAttribute("role","status");
+  q.append(grammarNode("span",(GRAMMAR_TYPES[kind]||"练习")+(mode==="mixed"?" · "+e.topic:""),"grammar-kind"),grammarNode("strong",(i+1)+". "+e.prompt));
+  let answered=false,lock=()=>{};
+  const submit=value=>{if(answered||!String(value).trim())return;answered=true;count++;
+    const acceptable=[e.answer,...(Array.isArray(e.accepted_answers)?e.accepted_answers:[])];
+    const ok=acceptable.some(a=>grammarNormalize(value)===grammarNormalize(a));
+    if(ok)correct++;else{missed.push(e);if(kind==="translate")review++}
+    lock(ok,value);
+    feedback.textContent=(ok?"回答正确。":kind==="translate"?"与参考答案不同，需核对是否为合理表达。\n参考答案："+e.answer:"正确答案："+e.answer)+"\n"+(e.explanation||"");
+    feedback.classList.add(ok?"grammar-correct":"grammar-wrong");score();
+  };
+  if(kind==="choice"||(kind!=="reorder"&&!["fill","correct","transform","translate"].includes(kind))){
+    const options=grammarNode("div",undefined,"grammar-options");
+    for(const option of grammarShuffle(e.options||[])){const b=grammarNode("button",option);b.type="button";b.onclick=()=>submit(option);options.append(b)}
+    lock=(ok,value)=>{for(const b of options.children){b.disabled=true;if(b.textContent===e.answer)b.classList.add("grammar-correct");else if(b.textContent===value)b.classList.add("grammar-wrong")}};q.append(options);
+  }else if(kind==="reorder"){
+    const tokens=grammarShuffle(e.tokens||[]),selected=[],line=grammarNode("div",undefined,"grammar-token-area"),pool=grammarNode("div",undefined,"grammar-options"),controls=grammarNode("div",undefined,"grammar-options"),check=grammarNode("button","提交排序"),reset=grammarNode("button","清空");check.type=reset.type="button";check.className="primary";
+    const draw=()=>{line.replaceChildren();pool.replaceChildren();if(!selected.length)line.append(grammarNode("span","点击下方词语组成句子","muted"));for(const k of selected){const b=grammarNode("button",tokens[k]);b.type="button";b.disabled=answered;b.onclick=()=>{selected.splice(selected.indexOf(k),1);draw()};line.append(b)}
+    for(const [k,t] of tokens.entries()){const b=grammarNode("button",t);b.type="button";b.disabled=answered||selected.includes(k);b.onclick=()=>{selected.push(k);draw()};pool.append(b)}
+    check.disabled=answered||selected.length!==tokens.length;reset.disabled=answered||!selected.length};
+    check.onclick=()=>submit(selected.map(k=>tokens[k]).join(" "));reset.onclick=()=>{selected.length=0;draw()};lock=()=>draw();draw();controls.append(check,reset);q.append(line,pool,controls);
+  }else{
+    const input=grammarNode("input");input.type="text";input.lang="de";input.autocomplete="off";input.spellcheck=false;input.setAttribute("autocapitalize","off");input.setAttribute("autocorrect","off");input.setAttribute("aria-label","第 "+(i+1)+" 题德语答案");input.placeholder=kind==="fill"?"输入缺少的词":"输入完整德语答案";
+    const keys=grammarNode("div",undefined,"grammar-answer-line");for(const ch of ["ä","ö","ü","ß","Ä","Ö","Ü"]){const key=grammarNode("button",ch);key.type="button";key.onclick=()=>{if(answered)return;const a=input.selectionStart??input.value.length,b=input.selectionEnd??a;input.setRangeText(ch,a,b,"end");input.focus()};keys.append(key)}
+    const check=grammarNode("button","提交答案");check.type="button";check.className="primary";check.onclick=()=>submit(input.value);keys.append(check);input.onkeydown=ev=>{if(ev.key==="Enter"&&!ev.isComposing){ev.preventDefault();submit(input.value)}};
+    lock=()=>{input.readOnly=true;for(const b of keys.children)b.disabled=true};q.append(input,keys);
+  }
+  q.append(feedback);wrap.append(q);
+ }
+ ui("grammarStart").onclick=()=>renderGrammarExercises(row,ui("grammarType").value);
+ ui("grammarReset").onclick=()=>renderGrammarExercises(row,mode);
+ ui("grammarRetry").onclick=()=>renderGrammarExercises(row,mode,grammarShuffle(missed));
 }
 function courseLabel(level){return level==="B1_GOETHE"?"歌德 B1 备考词汇":level}
 async function loadCourse(level,btn){

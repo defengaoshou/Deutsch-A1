@@ -47,6 +47,16 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
 <section id="adminPortal" hidden><hr><h2>教师 · 课程授权</h2><label for="studentSelect">学生账号</label><select id="studentSelect"></select><div id="enrollmentControls"></div><button id="saveEnroll" class="primary">保存课程授权</button><p id="adminMsg" role="status"></p></section>
 <p id="portalMsg" role="status" style="white-space:pre-wrap"></p>
 </section><style>#portal [hidden],#studyApp[hidden],#portal[hidden]{display:none!important}#enrollmentControls label{display:flex;align-items:center;gap:8px;padding:8px 0}#enrollmentControls input[type=checkbox]{width:auto;margin:0}#portal h2{font-size:20px}#portal button{margin:4px}#portal label{display:block;margin:8px 0 2px}</style>
+<section id="grammarApp" hidden aria-label="A1 语法学习">
+<header><div><small>DEUTSCH / A1 / GRAMMATIK</small><h1>A1 · 语法学习室</h1></div><button id="grammarBack">返回课程</button></header>
+<div class="layout grammar-layout">
+<aside class="panel"><h2>语法专题</h2><div id="grammarList" class="list"></div></aside>
+<main class="panel grammar-main"><div id="grammarNumber" class="muted"></div><h1 id="grammarTitle"></h1><p id="grammarIntro"></p><section><h2>语法规则</h2><ul id="grammarRules"></ul></section><section><h2>变位与用法</h2><div id="grammarTable" class="grammar-table-wrap"></div></section><section><h2>例句 · Beispiele</h2><div id="grammarExamples"></div><p id="grammarAudioStatus" role="status" class="muted"></p></section><section><h2>随堂练习 · Übungen</h2><div id="grammarExercises"></div><p id="grammarScore" role="status"></p><button id="grammarReset">重新练习</button></section></main>
+</div></section>
+<style>
+#grammarApp[hidden]{display:none!important}#grammarApp h2{font-size:19px;margin:0 0 14px}#grammarApp .grammar-main h1{font-size:28px;margin:8px 0 12px}#grammarApp .grammar-main section{margin-top:26px;border-top:1px solid #e4ebe5;padding-top:20px}#grammarApp .grammar-main{min-width:0}#grammarApp .grammar-main li{margin:8px 0}#grammarApp .grammar-table-wrap{overflow-x:auto}#grammarApp table{width:100%;border-collapse:collapse;font-size:14px}#grammarApp th,#grammarApp td{text-align:left;padding:12px;border-bottom:1px solid #e1e9e4}#grammarApp th{background:#e9f2eb}#grammarApp .grammar-example{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #edf1ee}#grammarApp .grammar-example strong{display:block;font-size:17px;margin-bottom:5px}#grammarApp .grammar-example span{font-size:14px;color:#637970}#grammarApp .grammar-example button{flex-shrink:0;font-size:13px}#grammarApp .grammar-question{background:#f6f9f6;border:1px solid #e0e9e2;border-radius:12px;margin:12px 0;padding:14px}#grammarApp .grammar-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#grammarApp .grammar-feedback{font-size:13px;margin-top:8px}#grammarApp .grammar-correct{background:#e0f0e4;border-color:#80b28b;color:#21553a}#grammarApp .grammar-wrong{background:#fce9e7;border-color:#d5a29e;color:#873a31}#grammarApp #grammarScore{font-weight:700}#grammarApp .grammar-source{font-size:12px;color:#6d857e}
+@media(max-width:760px){#grammarApp .grammar-layout{grid-template-columns:1fr;padding:0 12px;gap:12px}#grammarApp .grammar-main{padding:16px}#grammarApp .grammar-main h1{font-size:23px}}
+</style>
 <div id="studyApp" hidden><header>
   <div>
     <small id="studySubtitle">DEUTSCH / WORTSTUDIO</small>
@@ -198,12 +208,51 @@ ui("loginForm").onsubmit=async e=>{
   ui("loginForm").hidden=true;ui("coursePortal").hidden=false;
   const levels=courseRows.filter(c=>admin||c.published);
   const box=ui("courseButtons");box.replaceChildren();
-  for(const c of levels){const btn=document.createElement("button");btn.textContent=courseLabel(c.level)+(c.published?"":" · 未发布");btn.className="primary";btn.onclick=()=>loadCourse(c.level,btn);box.append(btn)}
+  for(const c of levels){const btn=document.createElement("button");btn.textContent=(c.level==="A1"?"A1 词汇":courseLabel(c.level))+(c.published?"":" · 未发布");btn.className="primary";btn.onclick=()=>loadCourse(c.level,btn);box.append(btn)}
+  if(levels.some(c=>c.level==="A1")){const g=document.createElement("button");g.className="primary";g.textContent="A1 语法";g.onclick=()=>loadGrammar(g);box.append(g)}
   say(levels.length?"请选择课程。":"暂未开通课程，请联系教师。");
   if(admin){ui("adminPortal").hidden=false;try{await initAdmin()}catch(err){ui("adminMsg").textContent="读取学生列表失败："+err.message}}
  }catch(err){session=null;identity=null;ui("loginForm").hidden=false;ui("coursePortal").hidden=true;ui("adminPortal").hidden=true;say("登录或读取权限失败："+err.message)}
  finally{ui("loginSubmit").disabled=false}
 };
+let grammarRows=[],grammarCurrent=null;
+function grammarNode(tag,content,cls){const n=document.createElement(tag);if(content!==undefined)n.textContent=content;if(cls)n.className=cls;return n}
+async function loadGrammar(btn){
+ btn.disabled=true;say("正在读取已授权语法内容…");
+ try{
+  const rows=await allRows("grammar_lessons","select=id,sort_order,title_de,title_zh,content,published&level=eq.A1&order=sort_order.asc,id.asc");
+  if(!rows.length){say("暂无已授权的 A1 语法内容。");return}
+  grammarRows=rows;ui("grammarApp").hidden=false;ui("portal").hidden=true;say("");renderGrammar(rows[0]);
+ }catch(e){ui("grammarApp").hidden=true;ui("portal").hidden=false;say("语法暂不可用："+e.message)}
+ finally{btn.disabled=false}
+}
+ui("grammarBack").onclick=()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();ui("grammarApp").hidden=true;ui("portal").hidden=false;grammarRows=[];grammarCurrent=null;for(const id of ["grammarList","grammarRules","grammarTable","grammarExamples","grammarExercises"])ui(id).replaceChildren();for(const id of ["grammarNumber","grammarTitle","grammarIntro","grammarScore","grammarAudioStatus"])ui(id).textContent=""};
+function grammarSpeak(text){
+ const status=ui("grammarAudioStatus");if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){status.textContent="当前浏览器不支持语音朗读。";return}
+ const synth=window.speechSynthesis,voices=synth.getVoices().filter(v=>/^de(?:-|_|$)/i.test(v.lang||""));
+ const voice=voices.find(v=>/^de[-_]de$/i.test(v.lang)&&v.localService)||voices.find(v=>/^de[-_]de$/i.test(v.lang))||voices[0];
+ if(!voice){status.textContent="未检测到德语语音，请安装德语语音或稍后重试。";return}
+ synth.cancel();status.textContent="";const u=new SpeechSynthesisUtterance(text);u.voice=voice;u.lang=voice.lang.replace(/_/g,"-");u.rate=.9;u.onerror=e=>{if(!["canceled","interrupted"].includes(e.error))status.textContent="德语语音播放失败。"};synth.speak(u)
+}
+function renderGrammar(row){
+ grammarCurrent=row;const c=row.content||{};if(window.speechSynthesis)window.speechSynthesis.cancel();ui("grammarAudioStatus").textContent="";
+ const list=ui("grammarList");list.replaceChildren();for(const r of grammarRows){const b=grammarNode("button",undefined,"item"+(r.id===row.id?" active":""));const text=grammarNode("div",String(r.sort_order).padStart(2,"0")+" · "+r.title_zh);text.append(grammarNode("span",r.title_de,"item-meta"));b.append(text);b.onclick=()=>renderGrammar(r);list.append(b)}
+ ui("grammarNumber").textContent="Grammatik "+String(row.sort_order).padStart(2,"0")+" · "+row.title_de+(row.published?"":" · 未发布");
+ ui("grammarTitle").textContent=row.title_zh;ui("grammarIntro").textContent=c.intro||"";
+ ui("grammarRules").replaceChildren(...(c.rules||[]).map(r=>grammarNode("li",r)));
+ const table=grammarNode("table");const thead=grammarNode("thead"),tr=grammarNode("tr");for(const h of c.table?.headers||[])tr.append(grammarNode("th",h));thead.append(tr);table.append(thead);const body=grammarNode("tbody");for(const r of c.table?.rows||[]){const rr=grammarNode("tr");for(const x of r)rr.append(grammarNode("td",x));body.append(rr)}table.append(body);ui("grammarTable").replaceChildren(table);
+ const examples=ui("grammarExamples");examples.replaceChildren();for(const e of c.examples||[]){const item=grammarNode("div",undefined,"grammar-example"),words=grammarNode("div"),de=grammarNode("strong",e.de);de.lang="de";words.append(de,grammarNode("span",e.zh));const b=grammarNode("button","朗读");b.onclick=()=>grammarSpeak(e.de);item.append(words,b);examples.append(item)}
+ renderGrammarExercises(row);
+}
+function renderGrammarExercises(row){
+ const items=row.content?.exercises||[],wrap=ui("grammarExercises");wrap.replaceChildren();let count=0,correct=0;
+ const score=()=>{ui("grammarScore").textContent="已答 "+count+" / "+items.length+" · 答对 "+correct+" 题"+(count===items.length&&items.length?" · 本轮完成":"")};score();
+ for(const [i,e] of items.entries()){const q=grammarNode("div",undefined,"grammar-question");q.append(grammarNode("strong",(i+1)+". "+e.prompt));const options=grammarNode("div",undefined,"grammar-options"),feedback=grammarNode("div","","grammar-feedback");let answered=false;
+  for(const option of e.options||[]){const b=grammarNode("button",option);b.onclick=()=>{if(answered)return;answered=true;count++;const ok=option===e.answer;if(ok)correct++;for(const x of options.children){x.disabled=true;if(x.textContent===e.answer)x.classList.add("grammar-correct")}if(!ok)b.classList.add("grammar-wrong");feedback.textContent=(ok?"回答正确。":"正确答案："+e.answer+"。")+(e.explanation||"");score()};options.append(b)}
+  q.append(options,feedback);wrap.append(q)
+ }
+ ui("grammarReset").onclick=()=>renderGrammarExercises(row);
+}
 function courseLabel(level){return level==="B1_GOETHE"?"歌德 B1 备考词汇":level}
 async function loadCourse(level,btn){
  btn.disabled=true;say("正在读取已授权词库…");

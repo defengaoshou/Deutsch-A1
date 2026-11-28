@@ -51,7 +51,7 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
 <header><div><small>DEUTSCH / A1 / GRAMMATIK</small><h1>A1 · 语法学习室</h1></div><button id="grammarBack">返回课程</button></header>
 <div class="layout grammar-layout">
 <aside class="panel"><h2>语法专题</h2><div id="grammarList" class="list"></div></aside>
-<main class="panel grammar-main"><div id="grammarNumber" class="muted"></div><h1 id="grammarTitle"></h1><p id="grammarIntro"></p><p id="grammarSource" class="grammar-source"></p><section><h2>语法规则</h2><ul id="grammarRules"></ul></section><section><h2>变位与用法</h2><div id="grammarTable" class="grammar-table-wrap"></div></section><section><h2>例句 · Beispiele</h2><div id="grammarExamples"></div><p id="grammarAudioStatus" role="status" class="muted"></p></section><section id="grammarPractice"><h2>语法训练 · Übungen</h2><div class="grammar-training-controls"><label for="grammarType">训练方式</label><select id="grammarType"><option value="all">专题完整训练</option><option value="choice">选择题</option><option value="fill">动词 / 冠词填空</option><option value="reorder">句子排序</option><option value="correct">纠错题</option><option value="transform">句型转换</option><option value="translate">中译德</option><option value="mixed">本单元综合检测（每专题3题）</option></select><button id="grammarStart">开始训练</button></div><p id="grammarPracticeNote" class="muted" aria-live="polite"></p><div id="grammarExercises"></div><p id="grammarScore" role="status"></p><div class="grammar-options"><button id="grammarRetry" disabled>错题 / 待核对重练</button><button id="grammarReset">重新练习</button></div></section></main>
+<main class="panel grammar-main"><div id="grammarNumber" class="muted"></div><h1 id="grammarTitle"></h1><p id="grammarIntro"></p><p id="grammarSource" class="grammar-source"></p><section><h2>语法规则</h2><ul id="grammarRules"></ul></section><section><h2>变位与用法</h2><div id="grammarTable" class="grammar-table-wrap"></div></section><section id="grammarVisualSection" hidden><h2>图解与场景 · Grammatik im Bild</h2><div id="grammarVisuals"></div></section><section><h2>例句 · Beispiele</h2><div id="grammarExamples"></div><p id="grammarAudioStatus" role="status" class="muted"></p></section><section id="grammarPractice"><h2>语法训练 · Übungen</h2><div class="grammar-training-controls"><label for="grammarType">训练方式</label><select id="grammarType"><option value="all">专题完整训练</option><option value="choice">选择题</option><option value="fill">动词 / 冠词填空</option><option value="reorder">句子排序</option><option value="correct">纠错题</option><option value="transform">句型转换</option><option value="translate">中译德</option><option value="mixed">本单元综合检测（每专题3题）</option></select><button id="grammarStart">开始训练</button></div><p id="grammarPracticeNote" class="muted" aria-live="polite"></p><div id="grammarExercises"></div><p id="grammarScore" role="status"></p><div class="grammar-options"><button id="grammarRetry" disabled>错题 / 待核对重练</button><button id="grammarReset">重新练习</button></div></section></main>
 </div></section>
 <style>
 #grammarApp .grammar-training-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}#grammarApp .grammar-training-controls select{width:auto;max-width:100%;margin:0;flex:1}#grammarApp .grammar-question input{max-width:100%;margin:10px 0 4px}#grammarApp .grammar-answer-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap}#grammarApp .grammar-answer-line button{padding:6px 10px}#grammarApp .grammar-token-area{min-height:48px;border:1px dashed #93b5a1;border-radius:9px;padding:8px;margin:10px 0;display:flex;gap:6px;flex-wrap:wrap}#grammarApp .grammar-token-area button,#grammarApp .grammar-options button{white-space:normal;overflow-wrap:anywhere}#grammarApp .grammar-feedback{white-space:pre-wrap;overflow-wrap:anywhere}#grammarApp .grammar-mixed>.grammar-main section:not(#grammarPractice){display:none}#grammarApp .grammar-main.grammar-mixed>section:not(#grammarPractice){display:none}#grammarApp .grammar-kind{display:block;color:#547765;font-size:12px;margin-bottom:6px}#grammarApp .grammar-summary{font-size:14px;color:#426853;line-height:1.7}#grammarApp .grammar-training-controls button{white-space:nowrap}#grammarApp .grammar-unit{border:1px solid #dce7df;border-radius:12px;margin:0 0 10px;background:#fff;overflow:hidden}
@@ -64,6 +64,25 @@ button[aria-pressed="true"]{background:#e2f0e6;color:#18583f;border-color:#91baa
 #grammarApp .grammar-unit-body{padding:4px 6px 6px}
 #grammarApp .grammar-unit-body .item{overflow-wrap:anywhere}
 #grammarApp .grammar-unit-body .item>div{min-width:0}
+#grammarApp #grammarVisualSection[hidden]{display:none!important}
+#grammarApp #grammarVisuals{display:grid;gap:14px}
+#grammarApp .grammar-visual{border:1px solid #dce7df;border-radius:14px;background:#f8fbf8;padding:16px;min-width:0}
+#grammarApp .grammar-visual-title{font-size:15px;font-weight:750;margin:0 0 12px;color:#234e3d;overflow-wrap:anywhere}
+#grammarApp .grammar-visual-row+.grammar-visual-row{border-top:1px solid #dfe9e1;margin-top:12px;padding-top:12px}
+#grammarApp .grammar-visual-label{font-size:12px;color:#526e60;margin-bottom:6px}
+#grammarApp .grammar-visual-words{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+#grammarApp .grammar-visual-word{background:#eaf0eb;border-radius:7px;padding:8px 10px;font-size:16px;color:#203e32;overflow-wrap:anywhere}
+#grammarApp .grammar-visual-word.is-key{background:#21684e;color:#fff;font-weight:700}
+#grammarApp .grammar-visual-cn{font-size:14px;color:#526e60;line-height:1.55;margin:7px 0 0}
+#grammarApp .grammar-decision-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px}
+#grammarApp .grammar-decision-card{background:#e7f1e8;border:1px solid #d3e5d6;border-radius:10px;padding:12px}
+#grammarApp .grammar-decision-answer{font-size:24px;color:#21684e;font-weight:750;margin:5px 0 10px}
+#grammarApp .grammar-decision-example{font-size:15px;color:#234e3d;font-weight:650}
+#grammarApp .grammar-photo{display:grid;grid-template-columns:124px minmax(0,1fr);gap:14px;align-items:center;margin:0}
+#grammarApp .grammar-photo img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:9px;background:#e8eee8;display:block}
+#grammarApp .grammar-photo .grammar-visual-title{margin-bottom:3px}
+#grammarApp .grammar-visual-source{font-size:11px;color:#657d70;margin-top:8px;line-height:1.4}
+@media(max-width:440px){#grammarApp .grammar-photo{grid-template-columns:88px minmax(0,1fr);gap:10px}#grammarApp .grammar-visual{padding:12px}}
 #grammarApp[hidden]{display:none!important}#grammarApp h2{font-size:19px;margin:0 0 14px}#grammarApp .grammar-main h1{font-size:28px;margin:8px 0 12px}#grammarApp .grammar-main section{margin-top:26px;border-top:1px solid #e4ebe5;padding-top:20px}#grammarApp .grammar-main{min-width:0}#grammarApp .grammar-main li{margin:8px 0}#grammarApp .grammar-table-wrap{overflow-x:auto}#grammarApp table{width:100%;border-collapse:collapse;font-size:14px}#grammarApp th,#grammarApp td{text-align:left;padding:12px;border-bottom:1px solid #e1e9e4}#grammarApp th{background:#e9f2eb}#grammarApp .grammar-example{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #edf1ee}#grammarApp .grammar-example strong{display:block;font-size:17px;margin-bottom:5px}#grammarApp .grammar-example span{font-size:14px;color:#637970}#grammarApp .grammar-example button{flex-shrink:0;font-size:13px}#grammarApp .grammar-question{background:#f6f9f6;border:1px solid #e0e9e2;border-radius:12px;margin:12px 0;padding:14px}#grammarApp .grammar-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#grammarApp .grammar-feedback{font-size:13px;margin-top:8px}#grammarApp .grammar-correct{background:#e0f0e4;border-color:#80b28b;color:#21553a}#grammarApp .grammar-wrong{background:#fce9e7;border-color:#d5a29e;color:#873a31}#grammarApp #grammarScore{font-weight:700}#grammarApp .grammar-source{font-size:12px;color:#6d857e}
 @media(max-width:760px){#grammarApp .grammar-layout{grid-template-columns:1fr;padding:0 12px;gap:12px}#grammarApp .grammar-main{padding:16px}#grammarApp .grammar-main h1{font-size:23px}}
 </style>
@@ -236,13 +255,31 @@ async function loadGrammar(btn){
  }catch(e){ui("grammarApp").hidden=true;ui("portal").hidden=false;say("语法暂不可用："+e.message)}
  finally{btn.disabled=false}
 }
-ui("grammarBack").onclick=()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();ui("grammarApp").hidden=true;ui("portal").hidden=false;grammarRows=[];grammarCurrent=null;for(const id of ["grammarList","grammarRules","grammarTable","grammarExamples","grammarExercises"])ui(id).replaceChildren();for(const id of ["grammarNumber","grammarTitle","grammarIntro","grammarSource","grammarScore","grammarAudioStatus"])ui(id).textContent=""};
+ui("grammarBack").onclick=()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();ui("grammarApp").hidden=true;ui("portal").hidden=false;grammarRows=[];grammarCurrent=null;ui("grammarVisualSection").hidden=true;for(const id of ["grammarList","grammarRules","grammarTable","grammarExamples","grammarExercises","grammarVisuals"])ui(id).replaceChildren();for(const id of ["grammarNumber","grammarTitle","grammarIntro","grammarSource","grammarScore","grammarAudioStatus"])ui(id).textContent=""};
 function grammarSpeak(text){
  const status=ui("grammarAudioStatus");if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){status.textContent="当前浏览器不支持语音朗读。";return}
  const synth=window.speechSynthesis,voices=synth.getVoices().filter(v=>/^de(?:-|_|$)/i.test(v.lang||""));
  const voice=voices.find(v=>/^de[-_]de$/i.test(v.lang)&&v.localService)||voices.find(v=>/^de[-_]de$/i.test(v.lang))||voices[0];
  if(!voice){status.textContent="未检测到德语语音，请安装德语语音或稍后重试。";return}
  synth.cancel();status.textContent="";const u=new SpeechSynthesisUtterance(text);u.voice=voice;u.lang=voice.lang.replace(/_/g,"-");u.rate=.9;u.onerror=e=>{if(!["canceled","interrupted"].includes(e.error))status.textContent="德语语音播放失败。"};synth.speak(u)
+}
+function renderGrammarVisuals(content){
+ const section=ui("grammarVisualSection"),wrap=ui("grammarVisuals");wrap.replaceChildren();section.hidden=true;
+ for(const visual of Array.isArray(content.visuals)?content.visuals:[]){
+  if(!visual||typeof visual!=="object")continue;
+  const box=grammarNode("div",undefined,"grammar-visual");
+  if(visual.kind==="compare"&&Array.isArray(visual.rows)){
+   box.append(grammarNode("div",visual.title||"句型对照","grammar-visual-title"));
+   for(const row of visual.rows){if(!Array.isArray(row.parts))continue;const line=grammarNode("div",undefined,"grammar-visual-row");line.append(grammarNode("div",row.label||"","grammar-visual-label"));const words=grammarNode("div",undefined,"grammar-visual-words");words.lang="de";for(const part of row.parts)words.append(grammarNode("span",part.text||"","grammar-visual-word"+(part.highlight?" is-key":"")));line.append(words,grammarNode("p",row.zh||"","grammar-visual-cn"));box.append(line)}
+  }else if(visual.kind==="decision"&&Array.isArray(visual.branches)){
+   box.append(grammarNode("div",visual.title||"规则判断","grammar-visual-title"));const grid=grammarNode("div",undefined,"grammar-decision-grid");
+   for(const branch of visual.branches){const card=grammarNode("div",undefined,"grammar-decision-card");const answer=grammarNode("div",branch.answer||"","grammar-decision-answer");answer.lang="de";const example=grammarNode("div",branch.example||"","grammar-decision-example");example.lang="de";card.append(grammarNode("div",branch.label||"","grammar-visual-label"),answer,example,grammarNode("p",branch.zh||"","grammar-visual-cn"));grid.append(card)}box.append(grid)
+  }else if(visual.kind==="photo"&&typeof visual.src==="string"&&visual.src.length<500000&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(visual.src)){
+   const figure=grammarNode("figure",undefined,"grammar-photo"),img=grammarNode("img");img.src=visual.src;img.alt=visual.title||"课堂场景";img.loading="lazy";img.decoding="async";const cap=grammarNode("figcaption");const de=grammarNode("div",visual.title||"","grammar-visual-title");de.lang="de";cap.append(de,grammarNode("p",visual.zh||"","grammar-visual-cn"),grammarNode("div",visual.caption||"","grammar-visual-source"),grammarNode("div",visual.source||"","grammar-visual-source"));figure.append(img,cap);box.append(figure)
+  }else continue;
+  wrap.append(box);
+ }
+ section.hidden=!wrap.childElementCount;
 }
 function renderGrammar(row){
  grammarCurrent=row;const c=row.content||{};if(window.speechSynthesis)window.speechSynthesis.cancel();ui("grammarAudioStatus").textContent="";
@@ -266,6 +303,7 @@ function renderGrammar(row){
  ui("grammarNumber").textContent=(c.unit_no?"Lektion "+c.unit_no+" · ":"Grammatik · ")+row.title_de+(row.published?"":" · 未发布");
  ui("grammarTitle").textContent=row.title_zh;ui("grammarIntro").textContent=c.intro||"";ui("grammarSource").textContent=c.source?"课堂依据："+c.source:"";
  ui("grammarRules").replaceChildren(...(c.rules||[]).map(r=>grammarNode("li",r)));
+ renderGrammarVisuals(c);
  const table=grammarNode("table");const thead=grammarNode("thead"),tr=grammarNode("tr");for(const h of c.table?.headers||[])tr.append(grammarNode("th",h));thead.append(tr);table.append(thead);const body=grammarNode("tbody");for(const r of c.table?.rows||[]){const rr=grammarNode("tr");for(const x of r)rr.append(grammarNode("td",x));body.append(rr)}table.append(body);ui("grammarTable").replaceChildren(table);
  const examples=ui("grammarExamples");examples.replaceChildren();for(const e of c.examples||[]){const item=grammarNode("div",undefined,"grammar-example"),words=grammarNode("div"),de=grammarNode("strong",e.de);de.lang="de";words.append(de,grammarNode("span",e.zh));const b=grammarNode("button","朗读");b.onclick=()=>grammarSpeak(e.de);item.append(words,b);examples.append(item)}
  renderGrammarExercises(row);
